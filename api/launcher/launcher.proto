@@ -169,6 +169,7 @@ message LaunchInfo {
   uint64 launchID = 1;
   string name = 2;
   string description = 3;
+  LaunchType launchType = 4;
 }
 
 message GetLaunchesRequest {

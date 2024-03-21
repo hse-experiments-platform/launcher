@@ -338,8 +338,21 @@
         },
         "description": {
           "type": "string"
+        },
+        "launchType": {
+          "$ref": "#/definitions/launcherLaunchType"
         }
       }
+    },
+    "launcherLaunchType": {
+      "type": "string",
+      "enum": [
+        "LaunchTypeUnknown",
+        "LaunchTypeTrain",
+        "LaunchTypePredict",
+        "LaunchTypeGeneric"
+      ],
+      "default": "LaunchTypeUnknown"
     },
     "launcherLaunchTypeFilter": {
       "type": "object",
