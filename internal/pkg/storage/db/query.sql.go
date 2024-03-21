@@ -64,13 +64,13 @@ func (q *Queries) CreateTrainedModel(ctx context.Context, arg CreateTrainedModel
 
 const createTrainingHyperparameters = `-- name: CreateTrainingHyperparameters :exec
 insert into train_hyperparameters (train_model_id, hyperparameter_id, value)
-select $1, unnest($2::bigint[]), unnest($3::jsonb[])
+select $1, unnest($2::bigint[]), unnest($3::text[])
 `
 
 type CreateTrainingHyperparametersParams struct {
 	TrainModelID      int64
 	HyperparameterIds []int64
-	Values            [][]byte
+	Values            []string
 }
 
 func (q *Queries) CreateTrainingHyperparameters(ctx context.Context, arg CreateTrainingHyperparametersParams) error {

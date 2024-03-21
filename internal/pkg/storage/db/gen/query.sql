@@ -11,7 +11,7 @@ returning id;
 
 -- name: CreateTrainingHyperparameters :exec
 insert into train_hyperparameters (train_model_id, hyperparameter_id, value)
-select $1, unnest(sqlc.arg(hyperparameter_ids)::bigint[]), unnest(sqlc.arg(values)::jsonb[]);
+select $1, unnest(sqlc.arg(hyperparameter_ids)::bigint[]), unnest(sqlc.arg(values)::text[]);
 
 -- name: UpdateTrainedModelStatus :exec
 update trained_models

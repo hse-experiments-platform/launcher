@@ -60,7 +60,7 @@ func (s *launcherService) StartTraining(ctx context.Context, req *pb.StartTraini
 	params := db.CreateTrainingHyperparametersParams{TrainModelID: modelID}
 	for id, v := range req.GetModelSettings().GetHyperparameterValues() {
 		params.HyperparameterIds = append(params.HyperparameterIds, int64(id))
-		params.Values = append(params.Values, []byte(v))
+		params.Values = append(params.Values, v)
 	}
 	if err := s.commonDB.CreateTrainingHyperparameters(ctx, params); err != nil {
 		if err := s.failStartTraining(ctx, modelID, launchID, err); err != nil {
