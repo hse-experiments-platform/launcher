@@ -37,7 +37,8 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 service LauncherService {
   rpc StartTraining(StartTrainingRequest) returns (StartTrainingResponse) {
     option (google.api.http) = {
-      get: "/api/v1/training/start"
+      post: "/api/v1/training/start"
+      body: "*";
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       security: {security_requirement: {key: "AccessToken";value: {}}}
@@ -46,12 +47,50 @@ service LauncherService {
 
   rpc StartPrediction(StartPredictionRequest) returns (StartPredictionResponse) {
     option (google.api.http) = {
-      get: "/api/v1/prediction/start"
+      post: "/api/v1/prediction/start"
+      body: "*";
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       security: {security_requirement: {key: "AccessToken";value: {}}}
     };
   };
+
+  rpc StartGenericLaunch(StartGenericLaunchRequest) returns (StartGenericLaunchResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/generic/start"
+      body: "*";
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
+  rpc GetLaunches(GetLaunchesRequest) returns (GetLaunchesResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/launches"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
+  rpc GetTrainResults(GetTrainResultsRequest) returns (GetTrainResultsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/launches/trains/{launchID}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
+  rpc GetPredictResults(GetPredictResultsRequest) returns (GetPredictResultsResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/launches/predicts/{launchID}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
 }
 
 message PageInfo {

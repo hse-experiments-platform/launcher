@@ -20,8 +20,184 @@
     "application/json"
   ],
   "paths": {
-    "/api/v1/prediction/start": {
+    "/api/v1/generic/start": {
+      "post": {
+        "operationId": "LauncherService_StartGenericLaunch",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/launcherStartGenericLaunchResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/launcherStartGenericLaunchRequest"
+            }
+          }
+        ],
+        "tags": [
+          "LauncherService"
+        ],
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ]
+      }
+    },
+    "/api/v1/launches": {
       "get": {
+        "operationId": "LauncherService_GetLaunches",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/launcherGetLaunchesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "launchTypes.IncludeTrain",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "launchTypes.IncludePredict",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "launchTypes.IncludeGeneric",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "tags": [
+          "LauncherService"
+        ],
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ]
+      }
+    },
+    "/api/v1/launches/predicts/{launchID}": {
+      "get": {
+        "operationId": "LauncherService_GetPredictResults",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/launcherGetPredictResultsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "launchID",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "LauncherService"
+        ],
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ]
+      }
+    },
+    "/api/v1/launches/trains/{launchID}": {
+      "get": {
+        "operationId": "LauncherService_GetTrainResults",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/launcherGetTrainResultsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "launchID",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "uint64"
+          }
+        ],
+        "tags": [
+          "LauncherService"
+        ],
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ]
+      }
+    },
+    "/api/v1/prediction/start": {
+      "post": {
         "operationId": "LauncherService_StartPrediction",
         "responses": {
           "200": {
@@ -39,31 +215,12 @@
         },
         "parameters": [
           {
-            "name": "name",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "description",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "modelSettings.trainedModelID",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "datasetSettings.datasetId",
-            "description": "TODO: drop columns",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/launcherStartPredictionRequest"
+            }
           }
         ],
         "tags": [
@@ -77,7 +234,7 @@
       }
     },
     "/api/v1/training/start": {
-      "get": {
+      "post": {
         "operationId": "LauncherService_StartTraining",
         "responses": {
           "200": {
@@ -95,50 +252,12 @@
         },
         "parameters": [
           {
-            "name": "name",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "description",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "modelSettings.modelID",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "modelSettings.hyperparameterValues",
-            "description": "This is a request variable of the map type. The query format is \"map_name[key]=value\", e.g. If the map name is Age, the key type is string, and the value type is integer, the query parameter is expressed as Age[\"bob\"]=18",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "datasetSettings.datasetID",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "datasetSettings.targetColumn",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "datasetSettings.trainTestSplit",
-            "in": "query",
-            "required": false,
-            "type": "number",
-            "format": "double"
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/launcherStartTrainingRequest"
+            }
           }
         ],
         "tags": [
@@ -153,6 +272,138 @@
     }
   },
   "definitions": {
+    "launcherGetLaunchesResponse": {
+      "type": "object",
+      "properties": {
+        "launches": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/launcherLaunchInfo"
+          }
+        },
+        "pageInfo": {
+          "$ref": "#/definitions/launcherPageInfo"
+        }
+      }
+    },
+    "launcherGetPredictResultsResponse": {
+      "type": "object",
+      "properties": {
+        "trainedModelID": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "status": {
+          "$ref": "#/definitions/launcherPredictStatus"
+        },
+        "resultDatasetID": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "launcherGetTrainResultsResponse": {
+      "type": "object",
+      "properties": {
+        "modelID": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "trainedModelID": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "status": {
+          "$ref": "#/definitions/launcherTrainStatus"
+        },
+        "metrics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/launcherMetric"
+          }
+        }
+      }
+    },
+    "launcherLaunchInfo": {
+      "type": "object",
+      "properties": {
+        "launchID": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "launcherLaunchTypeFilter": {
+      "type": "object",
+      "properties": {
+        "IncludeTrain": {
+          "type": "boolean"
+        },
+        "IncludePredict": {
+          "type": "boolean"
+        },
+        "IncludeGeneric": {
+          "type": "boolean"
+        }
+      }
+    },
+    "launcherMetric": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      }
+    },
+    "launcherPageInfo": {
+      "type": "object",
+      "properties": {
+        "offset": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "limit": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "total": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "launcherPredictStatus": {
+      "type": "string",
+      "enum": [
+        "PredictStatusUnknown",
+        "PredictStatusNotStarted",
+        "PredictStatusInProgress",
+        "PredictStatusError",
+        "PredictStatusDone"
+      ],
+      "default": "PredictStatusUnknown"
+    },
     "launcherPredictionDatasetSettings": {
       "type": "object",
       "properties": {
@@ -172,12 +423,70 @@
         }
       }
     },
+    "launcherStartGenericLaunchRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "launcherID": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "launcherStartGenericLaunchResponse": {
+      "type": "object",
+      "properties": {
+        "launchID": {
+          "type": "string",
+          "format": "uint64"
+        }
+      }
+    },
+    "launcherStartPredictionRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "modelSettings": {
+          "$ref": "#/definitions/launcherPredictionModelSettings"
+        },
+        "datasetSettings": {
+          "$ref": "#/definitions/launcherPredictionDatasetSettings"
+        }
+      }
+    },
     "launcherStartPredictionResponse": {
       "type": "object",
       "properties": {
         "launchID": {
           "type": "string",
           "format": "uint64"
+        }
+      }
+    },
+    "launcherStartTrainingRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "modelSettings": {
+          "$ref": "#/definitions/launcherTrainingModelSettings"
+        },
+        "datasetSettings": {
+          "$ref": "#/definitions/launcherTrainingDatasetSettings"
         }
       }
     },
@@ -193,6 +502,17 @@
           "format": "uint64"
         }
       }
+    },
+    "launcherTrainStatus": {
+      "type": "string",
+      "enum": [
+        "TrainStatusUnknown",
+        "TrainStatusNotStarted",
+        "TrainStatusInProgress",
+        "TrainStatusError",
+        "TrainStatusDone"
+      ],
+      "default": "TrainStatusUnknown"
     },
     "launcherTrainingDatasetSettings": {
       "type": "object",
