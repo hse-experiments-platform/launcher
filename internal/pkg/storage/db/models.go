@@ -224,7 +224,7 @@ type ProblemMetric struct {
 type TrainHyperparameter struct {
 	TrainModelID     int64
 	HyperparameterID int64
-	Value            []byte
+	Value            string
 }
 
 type TrainMetric struct {
