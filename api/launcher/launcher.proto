@@ -1,0 +1,197 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/any.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+package github.hse_experiments_platform.launcher;
+
+option go_package = "github.com/hse-experiments-platform/launcher;launcher";
+
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: {
+    title: "HSE MLOps Launcher service";
+    version: "1.0";
+    description: "Launcher service for mlops project.",
+  };
+
+  security_definitions: {
+    security: {
+      key: "AccessToken";
+      value: {
+        type: TYPE_API_KEY;
+        description: "Enter the token with the `Bearer: ` prefix, e.g. \"Bearer abcde12345\""
+        in: IN_HEADER;
+        name: "Authorization";
+      }
+    }
+  };
+
+  schemes: HTTP;
+  consumes: "application/json";
+  produces: "application/json";
+};
+
+service LauncherService {
+  rpc StartTraining(StartTrainingRequest) returns (StartTrainingResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/training/start"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  };
+
+  rpc StartPrediction(StartPredictionRequest) returns (StartPredictionResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/prediction/start"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  };
+}
+
+message PageInfo {
+  uint64 offset = 1;
+  uint64 limit = 2;
+  uint64 total = 3;
+}
+
+message TrainingModelSettings {
+  uint64 modelID = 1;
+  map<uint64, string> hyperparameterValues = 2;
+}
+
+message TrainingDatasetSettings {
+  uint64 datasetID = 1;
+  string targetColumn = 2;
+  double trainTestSplit = 3;
+}
+
+message StartTrainingRequest {
+  string name = 1;
+  string description = 2;
+  TrainingModelSettings modelSettings = 3;
+  TrainingDatasetSettings datasetSettings = 4;
+}
+
+message StartTrainingResponse {
+  uint64 trainedModelID = 1;
+  uint64 launchID = 2;
+}
+
+message PredictionModelSettings {
+  uint64 trainedModelID = 1;
+}
+
+message PredictionDatasetSettings {
+  uint64 dataset_id = 1;
+  // TODO: drop columns
+}
+
+message StartPredictionRequest {
+  string name = 1;
+  string description = 2;
+  PredictionModelSettings modelSettings = 3;
+  PredictionDatasetSettings datasetSettings = 4;
+}
+
+message StartPredictionResponse {
+  uint64 launchID = 1;
+}
+
+message StartGenericLaunchRequest {
+  string name = 1;
+  string description = 2;
+  uint64 launcherID = 3;
+}
+
+message StartGenericLaunchResponse {
+  uint64 launchID = 1;
+}
+
+enum LaunchType {
+  LaunchTypeUnknown = 0;
+  LaunchTypeTrain = 1;
+  LaunchTypePredict = 2;
+  LaunchTypeGeneric = 3;
+}
+
+message LaunchTypeFilter {
+  bool IncludeTrain = 1;
+  bool IncludePredict = 2;
+  bool IncludeGeneric = 3;
+}
+
+message LaunchInfo {
+  uint64 launchID = 1;
+  string name = 2;
+  string description = 3;
+}
+
+message GetLaunchesRequest {
+  uint64 limit = 1;
+  uint64 offset = 2;
+  string query = 3;
+  LaunchTypeFilter launchTypes = 4;
+}
+
+message GetLaunchesResponse{
+  repeated LaunchInfo launches = 1;
+  PageInfo pageInfo = 2;
+}
+
+message GetTrainResultsRequest {
+  uint64 launchID = 1;
+}
+
+message Metric {
+  uint64 id = 1;
+  string name = 2;
+  string description = 3;
+  string type = 4;
+  string value = 5;
+}
+
+enum TrainStatus {
+  TrainStatusUnknown = 0;
+  TrainStatusNotStarted = 1;
+  TrainStatusInProgress = 2;
+  TrainStatusError = 3;
+  TrainStatusDone = 4;
+}
+
+message GetTrainResultsResponse {
+  uint64 modelID = 1;
+  uint64 trainedModelID = 2;
+  TrainStatus status = 3;
+  repeated Metric metrics = 4;
+}
+
+enum PredictStatus {
+  PredictStatusUnknown = 0;
+  PredictStatusNotStarted = 1;
+  PredictStatusInProgress = 2;
+  PredictStatusError = 3;
+  PredictStatusDone = 4;
+}
+
+message GetPredictResultsRequest {
+  uint64 launchID = 1;
+}
+
+message GetPredictResultsResponse {
+  uint64 trainedModelID = 1;
+  PredictStatus status = 2;
+  uint64 resultDatasetID = 3;
+}
+
+
+
+
+
+
+
