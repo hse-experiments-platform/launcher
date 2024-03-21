@@ -8,7 +8,6 @@ import (
 	pb "github.com/hse-experiments-platform/launcher/pkg/launcher"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
-	"github.com/rs/zerolog/log"
 )
 
 func (s *launcherService) StartTraining(ctx context.Context, req *pb.StartTrainingRequest) (*pb.StartTrainingResponse, error) {
@@ -51,23 +50,10 @@ func (s *launcherService) StartTraining(ctx context.Context, req *pb.StartTraini
 		return nil
 	})
 	if err != nil {
-		if modelID != 0 {
-			if err := s.commonDB.UpdateTrainedModelStatus(ctx, db.UpdateTrainedModelStatusParams{
-				ID:                  modelID,
-				TrainError:          pgtype.Text{String: err.Error()},
-				ModelTrainingStatus: db.ModelTrainingStatusError,
-			}); err != nil {
-				log.Error().Err(err).Msg("cannot set trained model error")
-			}
+		if err := s.failStartTraining(ctx, modelID, launchID, err); err != nil {
+			return nil, fmt.Errorf("s.failStartTraining: %w", err)
 		}
-		if launchID != 0 {
-			if err := s.commonDB.UpdateLaunchStatus(ctx, db.UpdateLaunchStatusParams{
-				ID:          modelID,
-				LaunchError: pgtype.Text{String: err.Error()},
-			}); err != nil {
-				log.Error().Err(err).Msg("cannot set launch error")
-			}
-		}
+
 		return nil, fmt.Errorf("pgx.BeginTxFunc: %w", err)
 	}
 
@@ -76,8 +62,12 @@ func (s *launcherService) StartTraining(ctx context.Context, req *pb.StartTraini
 		params.HyperparameterIds = append(params.HyperparameterIds, int64(id))
 		params.Values = append(params.Values, []byte(v))
 	}
-	if err1 := s.commonDB.CreateTrainingHyperparameters(ctx, params); err != nil {
-		return nil, fmt.Errorf("dbtx.CreateTrainingHyperparameters: %w", err1)
+	if err := s.commonDB.CreateTrainingHyperparameters(ctx, params); err != nil {
+		if err := s.failStartTraining(ctx, modelID, launchID, err); err != nil {
+			return nil, fmt.Errorf("s.failStartTraining: %w", err)
+		}
+
+		return nil, fmt.Errorf("dbtx.CreateTrainingHyperparameters: %w", err)
 	}
 
 	resp = &pb.StartTrainingResponse{
@@ -85,4 +75,25 @@ func (s *launcherService) StartTraining(ctx context.Context, req *pb.StartTraini
 		LaunchID:       uint64(launchID),
 	}
 	return resp, nil
+}
+
+func (s *launcherService) failStartTraining(ctx context.Context, modelID int64, launchID int64, err error) error {
+	if modelID != 0 {
+		if errS := s.commonDB.UpdateTrainedModelStatus(ctx, db.UpdateTrainedModelStatusParams{
+			ID:                  modelID,
+			TrainError:          pgtype.Text{String: err.Error()},
+			ModelTrainingStatus: db.ModelTrainingStatusError,
+		}); errS != nil {
+			return fmt.Errorf("cannot set erro: %s, error: %w", errS.Error(), err)
+		}
+	}
+	if launchID != 0 {
+		if errS := s.commonDB.UpdateLaunchStatus(ctx, db.UpdateLaunchStatusParams{
+			ID:          modelID,
+			LaunchError: pgtype.Text{String: err.Error()},
+		}); errS != nil {
+			return fmt.Errorf("cannot set erro: %s, error: %w", errS.Error(), err)
+		}
+	}
+	return nil
 }
