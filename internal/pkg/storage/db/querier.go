@@ -9,11 +9,11 @@ import (
 )
 
 type Querier interface {
-	GetModel(ctx context.Context, id int64) (GetModelRow, error)
-	GetModelHyperparameters(ctx context.Context, id int64) ([]GetModelHyperparametersRow, error)
-	GetModelProblem(ctx context.Context, id int64) (GetModelProblemRow, error)
-	GetModels(ctx context.Context, arg GetModelsParams) ([]GetModelsRow, error)
-	GetProblems(ctx context.Context, arg GetProblemsParams) ([]GetProblemsRow, error)
+	CreateLaunch(ctx context.Context, arg CreateLaunchParams) (int64, error)
+	CreateTrainedModel(ctx context.Context, arg CreateTrainedModelParams) (int64, error)
+	CreateTrainingHyperparameters(ctx context.Context, arg CreateTrainingHyperparametersParams) error
+	UpdateLaunchStatus(ctx context.Context, arg UpdateLaunchStatusParams) error
+	UpdateTrainedModelStatus(ctx context.Context, arg UpdateTrainedModelStatusParams) error
 }
 
 var _ Querier = (*Queries)(nil)

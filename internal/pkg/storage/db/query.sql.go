@@ -7,212 +7,109 @@ package db
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
-const getModel = `-- name: GetModel :one
-select id,
-       name,
-       description
-from models
+const createLaunch = `-- name: CreateLaunch :one
+insert into launches (launch_type, name, description)
+values ($1, $2, $3)
+returning id
+`
+
+type CreateLaunchParams struct {
+	LaunchType  LaunchType
+	Name        string
+	Description string
+}
+
+func (q *Queries) CreateLaunch(ctx context.Context, arg CreateLaunchParams) (int64, error) {
+	row := q.db.QueryRow(ctx, createLaunch, arg.LaunchType, arg.Name, arg.Description)
+	var id int64
+	err := row.Scan(&id)
+	return id, err
+}
+
+const createTrainedModel = `-- name: CreateTrainedModel :one
+insert into trained_models (name, description, model_id, model_training_status, training_dataset_id, target_column,
+                            launch_id)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
+returning id
+`
+
+type CreateTrainedModelParams struct {
+	Name                string
+	Description         string
+	ModelID             int64
+	ModelTrainingStatus ModelTrainingStatus
+	TrainingDatasetID   int64
+	TargetColumn        string
+	LaunchID            int64
+}
+
+func (q *Queries) CreateTrainedModel(ctx context.Context, arg CreateTrainedModelParams) (int64, error) {
+	row := q.db.QueryRow(ctx, createTrainedModel,
+		arg.Name,
+		arg.Description,
+		arg.ModelID,
+		arg.ModelTrainingStatus,
+		arg.TrainingDatasetID,
+		arg.TargetColumn,
+		arg.LaunchID,
+	)
+	var id int64
+	err := row.Scan(&id)
+	return id, err
+}
+
+const createTrainingHyperparameters = `-- name: CreateTrainingHyperparameters :exec
+insert into train_hyperparameters (train_model_id, hyperparameter_id, value)
+select $1, unnest($2::bigint[]), unnest($3::jsonb[])
+`
+
+type CreateTrainingHyperparametersParams struct {
+	TrainModelID      int64
+	HyperparameterIds []int64
+	Values            [][]byte
+}
+
+func (q *Queries) CreateTrainingHyperparameters(ctx context.Context, arg CreateTrainingHyperparametersParams) error {
+	_, err := q.db.Exec(ctx, createTrainingHyperparameters, arg.TrainModelID, arg.HyperparameterIds, arg.Values)
+	return err
+}
+
+const updateLaunchStatus = `-- name: UpdateLaunchStatus :exec
+update launches
+set launch_error = $2,
+    updated_at   = default,
+    finished_at  = default
 where id = $1
 `
 
-type GetModelRow struct {
+type UpdateLaunchStatusParams struct {
 	ID          int64
-	Name        string
-	Description string
+	LaunchError pgtype.Text
 }
 
-func (q *Queries) GetModel(ctx context.Context, id int64) (GetModelRow, error) {
-	row := q.db.QueryRow(ctx, getModel, id)
-	var i GetModelRow
-	err := row.Scan(&i.ID, &i.Name, &i.Description)
-	return i, err
+func (q *Queries) UpdateLaunchStatus(ctx context.Context, arg UpdateLaunchStatusParams) error {
+	_, err := q.db.Exec(ctx, updateLaunchStatus, arg.ID, arg.LaunchError)
+	return err
 }
 
-const getModelHyperparameters = `-- name: GetModelHyperparameters :many
-select h.id,
-       h.name,
-       h.description,
-       h.type,
-       h.default_value
-from models m
-         join hyperparameters h on m.id = h.model_id
-where m.id = $1
+const updateTrainedModelStatus = `-- name: UpdateTrainedModelStatus :exec
+update trained_models
+set train_error           = $2,
+    model_training_status = $3
+where id = $1
 `
 
-type GetModelHyperparametersRow struct {
-	ID           int64
-	Name         string
-	Description  string
-	Type         string
-	DefaultValue []byte
+type UpdateTrainedModelStatusParams struct {
+	ID                  int64
+	TrainError          pgtype.Text
+	ModelTrainingStatus ModelTrainingStatus
 }
 
-func (q *Queries) GetModelHyperparameters(ctx context.Context, id int64) ([]GetModelHyperparametersRow, error) {
-	rows, err := q.db.Query(ctx, getModelHyperparameters, id)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []GetModelHyperparametersRow
-	for rows.Next() {
-		var i GetModelHyperparametersRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.Name,
-			&i.Description,
-			&i.Type,
-			&i.DefaultValue,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getModelProblem = `-- name: GetModelProblem :one
-select p.id,
-       p.name,
-       p.description,
-       array_agg(me.id)          as metric_ids,
-       array_agg(me.name)        as metric_names,
-       array_agg(me.description) as metric_descriptions
-from models m
-         join problems p on m.problem_id = p.id
-         join problem_metrics pm on p.id = pm.problem_id
-         join metrics me on pm.metric_id = me.id
-where m.id = $1
-group by (p.id, p.name, p.description)
-`
-
-type GetModelProblemRow struct {
-	ID                 int64
-	Name               string
-	Description        string
-	MetricIds          []int64
-	MetricNames        []string
-	MetricDescriptions []string
-}
-
-func (q *Queries) GetModelProblem(ctx context.Context, id int64) (GetModelProblemRow, error) {
-	row := q.db.QueryRow(ctx, getModelProblem, id)
-	var i GetModelProblemRow
-	err := row.Scan(
-		&i.ID,
-		&i.Name,
-		&i.Description,
-		&i.MetricIds,
-		&i.MetricNames,
-		&i.MetricDescriptions,
-	)
-	return i, err
-}
-
-const getModels = `-- name: GetModels :many
-select id,
-       name,
-       description,
-       count(1) over () as count
-from models
-where name like $1 and (problem_id = $4 or $4 = 0)
-order by created_at desc
-limit $2 offset $3
-`
-
-type GetModelsParams struct {
-	Name      string
-	Limit     int64
-	Offset    int64
-	ProblemID int64
-}
-
-type GetModelsRow struct {
-	ID          int64
-	Name        string
-	Description string
-	Count       int64
-}
-
-func (q *Queries) GetModels(ctx context.Context, arg GetModelsParams) ([]GetModelsRow, error) {
-	rows, err := q.db.Query(ctx, getModels,
-		arg.Name,
-		arg.Limit,
-		arg.Offset,
-		arg.ProblemID,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []GetModelsRow
-	for rows.Next() {
-		var i GetModelsRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.Name,
-			&i.Description,
-			&i.Count,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const getProblems = `-- name: GetProblems :many
-select id,
-       name,
-       description,
-       count(1) over () as count
-from problems
-where name like $1
-order by created_at desc
-limit $2 offset $3
-`
-
-type GetProblemsParams struct {
-	Name   string
-	Limit  int64
-	Offset int64
-}
-
-type GetProblemsRow struct {
-	ID          int64
-	Name        string
-	Description string
-	Count       int64
-}
-
-func (q *Queries) GetProblems(ctx context.Context, arg GetProblemsParams) ([]GetProblemsRow, error) {
-	rows, err := q.db.Query(ctx, getProblems, arg.Name, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []GetProblemsRow
-	for rows.Next() {
-		var i GetProblemsRow
-		if err := rows.Scan(
-			&i.ID,
-			&i.Name,
-			&i.Description,
-			&i.Count,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) UpdateTrainedModelStatus(ctx context.Context, arg UpdateTrainedModelStatusParams) error {
+	_, err := q.db.Exec(ctx, updateTrainedModelStatus, arg.ID, arg.TrainError, arg.ModelTrainingStatus)
+	return err
 }

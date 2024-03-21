@@ -1,50 +1,27 @@
--- name: GetModels :many
-select id,
-       name,
-       description,
-       count(1) over () as count
-from models
-where name like $1 and (problem_id = $4 or $4 = 0)
-order by created_at desc
-limit $2 offset $3;
+-- name: CreateLaunch :one
+insert into launches (launch_type, name, description)
+values ($1, $2, $3)
+returning id;
 
--- name: GetModel :one
-select id,
-       name,
-       description
-from models
+-- name: CreateTrainedModel :one
+insert into trained_models (name, description, model_id, model_training_status, training_dataset_id, target_column,
+                            launch_id)
+VALUES ($1, $2, $3, $4, $5, $6, $7)
+returning id;
+
+-- name: CreateTrainingHyperparameters :exec
+insert into train_hyperparameters (train_model_id, hyperparameter_id, value)
+select $1, unnest(sqlc.arg(hyperparameter_ids)::bigint[]), unnest(sqlc.arg(values)::jsonb[]);
+
+-- name: UpdateTrainedModelStatus :exec
+update trained_models
+set train_error           = $2,
+    model_training_status = $3
 where id = $1;
 
--- name: GetModelProblem :one
-select p.id,
-       p.name,
-       p.description,
-       array_agg(me.id)          as metric_ids,
-       array_agg(me.name)        as metric_names,
-       array_agg(me.description) as metric_descriptions
-from models m
-         join problems p on m.problem_id = p.id
-         join problem_metrics pm on p.id = pm.problem_id
-         join metrics me on pm.metric_id = me.id
-where m.id = $1
-group by (p.id, p.name, p.description);
-
--- name: GetModelHyperparameters :many
-select h.id,
-       h.name,
-       h.description,
-       h.type,
-       h.default_value
-from models m
-         join hyperparameters h on m.id = h.model_id
-where m.id = $1;
-
--- name: GetProblems :many
-select id,
-       name,
-       description,
-       count(1) over () as count
-from problems
-where name like $1
-order by created_at desc
-limit $2 offset $3;
+-- name: UpdateLaunchStatus :exec
+update launches
+set launch_error = $2,
+    updated_at   = default,
+    finished_at  = default
+where id = $1;
