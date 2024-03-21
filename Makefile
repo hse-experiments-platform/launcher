@@ -7,11 +7,11 @@ SWAGGER_FILES=$(shell find $(DST_DIR_RELATIVE) -name '*.swagger.json*')
 
 .PHONY: build
 build:
-	go build -o ./bin/launcker ./cmd/launcker/main.go
+	go build -o ./bin/launcher ./cmd/launcher/main.go
 
 .PHONY: run
 run:
-	DOTENV_FILE=$(CONFIGS_PATH)/dev/.env go run ./cmd/launcker/main.go
+	DOTENV_FILE=$(CONFIGS_PATH)/dev/.env go run ./cmd/launcher/main.go
 
 .PHONY: lint
 lint:
@@ -28,7 +28,7 @@ imports:
 
 .PHONY: docker-build
 docker-build:
-	docker build -t launcker:latest -f ./build/Dockerfile .
+	docker build -t launcher:latest -f ./build/Dockerfile .
 
 .PHONY: docker-run
 docker-run:
