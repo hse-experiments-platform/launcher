@@ -78,6 +78,148 @@ func (q *Queries) CreateTrainingHyperparameters(ctx context.Context, arg CreateT
 	return err
 }
 
+const getDataset = `-- name: GetDataset :one
+select id,
+       status,
+       creator_id,
+       rows_count
+from datasets
+where id = $1
+`
+
+type GetDatasetRow struct {
+	ID        int64
+	Status    DatasetStatus
+	CreatorID int64
+	RowsCount int64
+}
+
+func (q *Queries) GetDataset(ctx context.Context, id int64) (GetDatasetRow, error) {
+	row := q.db.QueryRow(ctx, getDataset, id)
+	var i GetDatasetRow
+	err := row.Scan(
+		&i.ID,
+		&i.Status,
+		&i.CreatorID,
+		&i.RowsCount,
+	)
+	return i, err
+}
+
+const getDatasetSchema = `-- name: GetDatasetSchema :many
+select column_name, column_type
+from dataset_schemas
+where dataset_id = $1
+order by column_number
+`
+
+type GetDatasetSchemaRow struct {
+	ColumnName string
+	ColumnType string
+}
+
+func (q *Queries) GetDatasetSchema(ctx context.Context, datasetID int64) ([]GetDatasetSchemaRow, error) {
+	rows, err := q.db.Query(ctx, getDatasetSchema, datasetID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetDatasetSchemaRow
+	for rows.Next() {
+		var i GetDatasetSchemaRow
+		if err := rows.Scan(&i.ColumnName, &i.ColumnType); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getTrainedModelMetrics = `-- name: GetTrainedModelMetrics :many
+select train_metrics.launch_id, trained_model_id, metric_id, value, id, name, description, model_id, model_training_status, training_dataset_id, target_column, train_error, created_at, updated_at, tm.launch_id
+from train_metrics
+         join trained_models tm on tm.launch_id = $1
+`
+
+type GetTrainedModelMetricsRow struct {
+	LaunchID            int64
+	TrainedModelID      int64
+	MetricID            int64
+	Value               []byte
+	ID                  int64
+	Name                string
+	Description         string
+	ModelID             int64
+	ModelTrainingStatus ModelTrainingStatus
+	TrainingDatasetID   int64
+	TargetColumn        string
+	TrainError          pgtype.Text
+	CreatedAt           pgtype.Timestamptz
+	UpdatedAt           pgtype.Timestamptz
+	LaunchID_2          int64
+}
+
+func (q *Queries) GetTrainedModelMetrics(ctx context.Context, launchID int64) ([]GetTrainedModelMetricsRow, error) {
+	rows, err := q.db.Query(ctx, getTrainedModelMetrics, launchID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetTrainedModelMetricsRow
+	for rows.Next() {
+		var i GetTrainedModelMetricsRow
+		if err := rows.Scan(
+			&i.LaunchID,
+			&i.TrainedModelID,
+			&i.MetricID,
+			&i.Value,
+			&i.ID,
+			&i.Name,
+			&i.Description,
+			&i.ModelID,
+			&i.ModelTrainingStatus,
+			&i.TrainingDatasetID,
+			&i.TargetColumn,
+			&i.TrainError,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.LaunchID_2,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const insertTrainMetrics = `-- name: InsertTrainMetrics :exec
+insert into train_metrics (launch_id, trained_model_id, metric_id, value)
+VALUES ($1, $2, $3, $4)
+`
+
+type InsertTrainMetricsParams struct {
+	LaunchID       int64
+	TrainedModelID int64
+	MetricID       int64
+	Value          []byte
+}
+
+func (q *Queries) InsertTrainMetrics(ctx context.Context, arg InsertTrainMetricsParams) error {
+	_, err := q.db.Exec(ctx, insertTrainMetrics,
+		arg.LaunchID,
+		arg.TrainedModelID,
+		arg.MetricID,
+		arg.Value,
+	)
+	return err
+}
+
 const updateLaunchStatus = `-- name: UpdateLaunchStatus :exec
 update launches
 set launch_error = $2,

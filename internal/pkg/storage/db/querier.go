@@ -12,6 +12,10 @@ type Querier interface {
 	CreateLaunch(ctx context.Context, arg CreateLaunchParams) (int64, error)
 	CreateTrainedModel(ctx context.Context, arg CreateTrainedModelParams) (int64, error)
 	CreateTrainingHyperparameters(ctx context.Context, arg CreateTrainingHyperparametersParams) error
+	GetDataset(ctx context.Context, id int64) (GetDatasetRow, error)
+	GetDatasetSchema(ctx context.Context, datasetID int64) ([]GetDatasetSchemaRow, error)
+	GetTrainedModelMetrics(ctx context.Context, launchID int64) ([]GetTrainedModelMetricsRow, error)
+	InsertTrainMetrics(ctx context.Context, arg InsertTrainMetricsParams) error
 	UpdateLaunchStatus(ctx context.Context, arg UpdateLaunchStatusParams) error
 	UpdateTrainedModelStatus(ctx context.Context, arg UpdateTrainedModelStatusParams) error
 }

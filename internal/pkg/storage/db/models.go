@@ -14,10 +14,14 @@ import (
 type DatasetStatus string
 
 const (
-	DatasetStatusInitializing DatasetStatus = "initializing"
-	DatasetStatusLoading      DatasetStatus = "loading"
-	DatasetStatusReady        DatasetStatus = "ready"
-	DatasetStatusError        DatasetStatus = "error"
+	DatasetStatusValue0                 DatasetStatus = ""
+	DatasetStatusInitializing           DatasetStatus = "initializing"
+	DatasetStatusLoading                DatasetStatus = "loading"
+	DatasetStatusWaitsConvertation      DatasetStatus = "waits_convertation"
+	DatasetStatusLoadingError           DatasetStatus = "loading_error"
+	DatasetStatusConvertationInProgress DatasetStatus = "convertation_in_progress"
+	DatasetStatusConvertationError      DatasetStatus = "convertation_error"
+	DatasetStatusReady                  DatasetStatus = "ready"
 )
 
 func (e *DatasetStatus) Scan(src interface{}) error {
