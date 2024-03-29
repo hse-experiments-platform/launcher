@@ -17,7 +17,7 @@ func (s *launcherService) GetTrainResults(ctx context.Context, req *pb.GetTrainR
 
 	for _, metric := range metrics {
 		resp.Metrics = append(resp.Metrics, &pb.Metric{
-			Id:          uint64(metric.MetricID),
+			Id:          uint64(metric.ID),
 			Name:        metric.Name,
 			Description: metric.Description,
 			Value:       string(metric.Value),

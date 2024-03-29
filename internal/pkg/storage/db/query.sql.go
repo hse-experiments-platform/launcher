@@ -139,27 +139,17 @@ func (q *Queries) GetDatasetSchema(ctx context.Context, datasetID int64) ([]GetD
 }
 
 const getTrainedModelMetrics = `-- name: GetTrainedModelMetrics :many
-select train_metrics.launch_id, trained_model_id, metric_id, value, id, name, description, model_id, model_training_status, training_dataset_id, target_column, train_error, created_at, updated_at, tm.launch_id
-from train_metrics
-         join trained_models tm on tm.launch_id = $1
+select m.id, m.name, m.description, tm.value
+from train_metrics tm
+         join trained_models t on t.launch_id = $1
+join metrics m on tm.metric_id = m.id
 `
 
 type GetTrainedModelMetricsRow struct {
-	LaunchID            int64
-	TrainedModelID      int64
-	MetricID            int64
-	Value               []byte
-	ID                  int64
-	Name                string
-	Description         string
-	ModelID             int64
-	ModelTrainingStatus ModelTrainingStatus
-	TrainingDatasetID   int64
-	TargetColumn        string
-	TrainError          pgtype.Text
-	CreatedAt           pgtype.Timestamptz
-	UpdatedAt           pgtype.Timestamptz
-	LaunchID_2          int64
+	ID          int64
+	Name        string
+	Description string
+	Value       []byte
 }
 
 func (q *Queries) GetTrainedModelMetrics(ctx context.Context, launchID int64) ([]GetTrainedModelMetricsRow, error) {
@@ -172,21 +162,10 @@ func (q *Queries) GetTrainedModelMetrics(ctx context.Context, launchID int64) ([
 	for rows.Next() {
 		var i GetTrainedModelMetricsRow
 		if err := rows.Scan(
-			&i.LaunchID,
-			&i.TrainedModelID,
-			&i.MetricID,
-			&i.Value,
 			&i.ID,
 			&i.Name,
 			&i.Description,
-			&i.ModelID,
-			&i.ModelTrainingStatus,
-			&i.TrainingDatasetID,
-			&i.TargetColumn,
-			&i.TrainError,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.LaunchID_2,
+			&i.Value,
 		); err != nil {
 			return nil, err
 		}

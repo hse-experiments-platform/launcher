@@ -45,6 +45,7 @@ insert into train_metrics (launch_id, trained_model_id, metric_id, value)
 VALUES ($1, $2, $3, $4);
 
 -- name: GetTrainedModelMetrics :many
-select tm.*
+select m.id, m.name, m.description, tm.value
 from train_metrics tm
-         join trained_models tm on tm.launch_id = $1;
+         join trained_models t on t.launch_id = $1
+join metrics m on tm.metric_id = m.id;
