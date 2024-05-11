@@ -19,24 +19,40 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	LauncherService_StartTraining_FullMethodName      = "/github.hse_experiments_platform.launcher.LauncherService/StartTraining"
-	LauncherService_StartPrediction_FullMethodName    = "/github.hse_experiments_platform.launcher.LauncherService/StartPrediction"
-	LauncherService_StartGenericLaunch_FullMethodName = "/github.hse_experiments_platform.launcher.LauncherService/StartGenericLaunch"
-	LauncherService_GetLaunches_FullMethodName        = "/github.hse_experiments_platform.launcher.LauncherService/GetLaunches"
-	LauncherService_GetTrainResults_FullMethodName    = "/github.hse_experiments_platform.launcher.LauncherService/GetTrainResults"
-	LauncherService_GetPredictResults_FullMethodName  = "/github.hse_experiments_platform.launcher.LauncherService/GetPredictResults"
+	LauncherService_GetLaunches_FullMethodName                = "/github.hse_experiments_platform.launcher.LauncherService/GetLaunches"
+	LauncherService_LaunchDatasetUpload_FullMethodName        = "/github.hse_experiments_platform.launcher.LauncherService/LaunchDatasetUpload"
+	LauncherService_GetDatasetUploadLaunch_FullMethodName     = "/github.hse_experiments_platform.launcher.LauncherService/GetDatasetUploadLaunch"
+	LauncherService_LaunchDatasetSetTypes_FullMethodName      = "/github.hse_experiments_platform.launcher.LauncherService/LaunchDatasetSetTypes"
+	LauncherService_GetDatasetSetTypesLaunch_FullMethodName   = "/github.hse_experiments_platform.launcher.LauncherService/GetDatasetSetTypesLaunch"
+	LauncherService_LaunchDatasetPreprocess_FullMethodName    = "/github.hse_experiments_platform.launcher.LauncherService/LaunchDatasetPreprocess"
+	LauncherService_GetDatasetPreprocessLaunch_FullMethodName = "/github.hse_experiments_platform.launcher.LauncherService/GetDatasetPreprocessLaunch"
+	LauncherService_LaunchTrain_FullMethodName                = "/github.hse_experiments_platform.launcher.LauncherService/LaunchTrain"
+	LauncherService_GetTrainLaunch_FullMethodName             = "/github.hse_experiments_platform.launcher.LauncherService/GetTrainLaunch"
+	LauncherService_LaunchPredict_FullMethodName              = "/github.hse_experiments_platform.launcher.LauncherService/LaunchPredict"
+	LauncherService_GetPredictLaunch_FullMethodName           = "/github.hse_experiments_platform.launcher.LauncherService/GetPredictLaunch"
+	LauncherService_LaunchGenericConvert_FullMethodName       = "/github.hse_experiments_platform.launcher.LauncherService/LaunchGenericConvert"
+	LauncherService_GetGenericConvertLaunch_FullMethodName    = "/github.hse_experiments_platform.launcher.LauncherService/GetGenericConvertLaunch"
+	LauncherService_WaitForLaunchFinish_FullMethodName        = "/github.hse_experiments_platform.launcher.LauncherService/WaitForLaunchFinish"
 )
 
 // LauncherServiceClient is the client API for LauncherService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type LauncherServiceClient interface {
-	StartTraining(ctx context.Context, in *StartTrainingRequest, opts ...grpc.CallOption) (*StartTrainingResponse, error)
-	StartPrediction(ctx context.Context, in *StartPredictionRequest, opts ...grpc.CallOption) (*StartPredictionResponse, error)
-	StartGenericLaunch(ctx context.Context, in *StartGenericLaunchRequest, opts ...grpc.CallOption) (*StartGenericLaunchResponse, error)
 	GetLaunches(ctx context.Context, in *GetLaunchesRequest, opts ...grpc.CallOption) (*GetLaunchesResponse, error)
-	GetTrainResults(ctx context.Context, in *GetTrainResultsRequest, opts ...grpc.CallOption) (*GetTrainResultsResponse, error)
-	GetPredictResults(ctx context.Context, in *GetPredictResultsRequest, opts ...grpc.CallOption) (*GetPredictResultsResponse, error)
+	LaunchDatasetUpload(ctx context.Context, in *LaunchDatasetUploadRequest, opts ...grpc.CallOption) (*LaunchDatasetUploadResponse, error)
+	GetDatasetUploadLaunch(ctx context.Context, in *GetDatasetUploadLaunchRequest, opts ...grpc.CallOption) (*GetDatasetUploadLaunchResponse, error)
+	LaunchDatasetSetTypes(ctx context.Context, in *LaunchDatasetSetTypesRequest, opts ...grpc.CallOption) (*LaunchDatasetSetTypesResponse, error)
+	GetDatasetSetTypesLaunch(ctx context.Context, in *GetDatasetSetTypesLaunchRequest, opts ...grpc.CallOption) (*GetDatasetSetTypesLaunchResponse, error)
+	LaunchDatasetPreprocess(ctx context.Context, in *LaunchDatasetPreprocessRequest, opts ...grpc.CallOption) (*LaunchDatasetPreprocessResponse, error)
+	GetDatasetPreprocessLaunch(ctx context.Context, in *GetDatasetPreprocessLaunchRequest, opts ...grpc.CallOption) (*GetDatasetPreprocessLaunchResponse, error)
+	LaunchTrain(ctx context.Context, in *LaunchTrainRequest, opts ...grpc.CallOption) (*LaunchTrainResponse, error)
+	GetTrainLaunch(ctx context.Context, in *GetTrainLaunchRequest, opts ...grpc.CallOption) (*GetTrainLaunchResponse, error)
+	LaunchPredict(ctx context.Context, in *LaunchPredictRequest, opts ...grpc.CallOption) (*LaunchPredictResponse, error)
+	GetPredictLaunch(ctx context.Context, in *GetPredictLaunchRequest, opts ...grpc.CallOption) (*GetPredictLaunchResponse, error)
+	LaunchGenericConvert(ctx context.Context, in *LaunchGenericConvertRequest, opts ...grpc.CallOption) (*LaunchGenericConvertResponse, error)
+	GetGenericConvertLaunch(ctx context.Context, in *GetGenericConvertLaunchRequest, opts ...grpc.CallOption) (*GetGenericConvertLaunchResponse, error)
+	WaitForLaunchFinish(ctx context.Context, in *WaitForLaunchFinishRequest, opts ...grpc.CallOption) (*WaitForLaunchFinishResponse, error)
 }
 
 type launcherServiceClient struct {
@@ -45,33 +61,6 @@ type launcherServiceClient struct {
 
 func NewLauncherServiceClient(cc grpc.ClientConnInterface) LauncherServiceClient {
 	return &launcherServiceClient{cc}
-}
-
-func (c *launcherServiceClient) StartTraining(ctx context.Context, in *StartTrainingRequest, opts ...grpc.CallOption) (*StartTrainingResponse, error) {
-	out := new(StartTrainingResponse)
-	err := c.cc.Invoke(ctx, LauncherService_StartTraining_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *launcherServiceClient) StartPrediction(ctx context.Context, in *StartPredictionRequest, opts ...grpc.CallOption) (*StartPredictionResponse, error) {
-	out := new(StartPredictionResponse)
-	err := c.cc.Invoke(ctx, LauncherService_StartPrediction_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *launcherServiceClient) StartGenericLaunch(ctx context.Context, in *StartGenericLaunchRequest, opts ...grpc.CallOption) (*StartGenericLaunchResponse, error) {
-	out := new(StartGenericLaunchResponse)
-	err := c.cc.Invoke(ctx, LauncherService_StartGenericLaunch_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *launcherServiceClient) GetLaunches(ctx context.Context, in *GetLaunchesRequest, opts ...grpc.CallOption) (*GetLaunchesResponse, error) {
@@ -83,18 +72,117 @@ func (c *launcherServiceClient) GetLaunches(ctx context.Context, in *GetLaunches
 	return out, nil
 }
 
-func (c *launcherServiceClient) GetTrainResults(ctx context.Context, in *GetTrainResultsRequest, opts ...grpc.CallOption) (*GetTrainResultsResponse, error) {
-	out := new(GetTrainResultsResponse)
-	err := c.cc.Invoke(ctx, LauncherService_GetTrainResults_FullMethodName, in, out, opts...)
+func (c *launcherServiceClient) LaunchDatasetUpload(ctx context.Context, in *LaunchDatasetUploadRequest, opts ...grpc.CallOption) (*LaunchDatasetUploadResponse, error) {
+	out := new(LaunchDatasetUploadResponse)
+	err := c.cc.Invoke(ctx, LauncherService_LaunchDatasetUpload_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *launcherServiceClient) GetPredictResults(ctx context.Context, in *GetPredictResultsRequest, opts ...grpc.CallOption) (*GetPredictResultsResponse, error) {
-	out := new(GetPredictResultsResponse)
-	err := c.cc.Invoke(ctx, LauncherService_GetPredictResults_FullMethodName, in, out, opts...)
+func (c *launcherServiceClient) GetDatasetUploadLaunch(ctx context.Context, in *GetDatasetUploadLaunchRequest, opts ...grpc.CallOption) (*GetDatasetUploadLaunchResponse, error) {
+	out := new(GetDatasetUploadLaunchResponse)
+	err := c.cc.Invoke(ctx, LauncherService_GetDatasetUploadLaunch_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *launcherServiceClient) LaunchDatasetSetTypes(ctx context.Context, in *LaunchDatasetSetTypesRequest, opts ...grpc.CallOption) (*LaunchDatasetSetTypesResponse, error) {
+	out := new(LaunchDatasetSetTypesResponse)
+	err := c.cc.Invoke(ctx, LauncherService_LaunchDatasetSetTypes_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *launcherServiceClient) GetDatasetSetTypesLaunch(ctx context.Context, in *GetDatasetSetTypesLaunchRequest, opts ...grpc.CallOption) (*GetDatasetSetTypesLaunchResponse, error) {
+	out := new(GetDatasetSetTypesLaunchResponse)
+	err := c.cc.Invoke(ctx, LauncherService_GetDatasetSetTypesLaunch_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *launcherServiceClient) LaunchDatasetPreprocess(ctx context.Context, in *LaunchDatasetPreprocessRequest, opts ...grpc.CallOption) (*LaunchDatasetPreprocessResponse, error) {
+	out := new(LaunchDatasetPreprocessResponse)
+	err := c.cc.Invoke(ctx, LauncherService_LaunchDatasetPreprocess_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *launcherServiceClient) GetDatasetPreprocessLaunch(ctx context.Context, in *GetDatasetPreprocessLaunchRequest, opts ...grpc.CallOption) (*GetDatasetPreprocessLaunchResponse, error) {
+	out := new(GetDatasetPreprocessLaunchResponse)
+	err := c.cc.Invoke(ctx, LauncherService_GetDatasetPreprocessLaunch_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *launcherServiceClient) LaunchTrain(ctx context.Context, in *LaunchTrainRequest, opts ...grpc.CallOption) (*LaunchTrainResponse, error) {
+	out := new(LaunchTrainResponse)
+	err := c.cc.Invoke(ctx, LauncherService_LaunchTrain_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *launcherServiceClient) GetTrainLaunch(ctx context.Context, in *GetTrainLaunchRequest, opts ...grpc.CallOption) (*GetTrainLaunchResponse, error) {
+	out := new(GetTrainLaunchResponse)
+	err := c.cc.Invoke(ctx, LauncherService_GetTrainLaunch_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *launcherServiceClient) LaunchPredict(ctx context.Context, in *LaunchPredictRequest, opts ...grpc.CallOption) (*LaunchPredictResponse, error) {
+	out := new(LaunchPredictResponse)
+	err := c.cc.Invoke(ctx, LauncherService_LaunchPredict_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *launcherServiceClient) GetPredictLaunch(ctx context.Context, in *GetPredictLaunchRequest, opts ...grpc.CallOption) (*GetPredictLaunchResponse, error) {
+	out := new(GetPredictLaunchResponse)
+	err := c.cc.Invoke(ctx, LauncherService_GetPredictLaunch_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *launcherServiceClient) LaunchGenericConvert(ctx context.Context, in *LaunchGenericConvertRequest, opts ...grpc.CallOption) (*LaunchGenericConvertResponse, error) {
+	out := new(LaunchGenericConvertResponse)
+	err := c.cc.Invoke(ctx, LauncherService_LaunchGenericConvert_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *launcherServiceClient) GetGenericConvertLaunch(ctx context.Context, in *GetGenericConvertLaunchRequest, opts ...grpc.CallOption) (*GetGenericConvertLaunchResponse, error) {
+	out := new(GetGenericConvertLaunchResponse)
+	err := c.cc.Invoke(ctx, LauncherService_GetGenericConvertLaunch_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *launcherServiceClient) WaitForLaunchFinish(ctx context.Context, in *WaitForLaunchFinishRequest, opts ...grpc.CallOption) (*WaitForLaunchFinishResponse, error) {
+	out := new(WaitForLaunchFinishResponse)
+	err := c.cc.Invoke(ctx, LauncherService_WaitForLaunchFinish_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -105,35 +193,67 @@ func (c *launcherServiceClient) GetPredictResults(ctx context.Context, in *GetPr
 // All implementations should embed UnimplementedLauncherServiceServer
 // for forward compatibility
 type LauncherServiceServer interface {
-	StartTraining(context.Context, *StartTrainingRequest) (*StartTrainingResponse, error)
-	StartPrediction(context.Context, *StartPredictionRequest) (*StartPredictionResponse, error)
-	StartGenericLaunch(context.Context, *StartGenericLaunchRequest) (*StartGenericLaunchResponse, error)
 	GetLaunches(context.Context, *GetLaunchesRequest) (*GetLaunchesResponse, error)
-	GetTrainResults(context.Context, *GetTrainResultsRequest) (*GetTrainResultsResponse, error)
-	GetPredictResults(context.Context, *GetPredictResultsRequest) (*GetPredictResultsResponse, error)
+	LaunchDatasetUpload(context.Context, *LaunchDatasetUploadRequest) (*LaunchDatasetUploadResponse, error)
+	GetDatasetUploadLaunch(context.Context, *GetDatasetUploadLaunchRequest) (*GetDatasetUploadLaunchResponse, error)
+	LaunchDatasetSetTypes(context.Context, *LaunchDatasetSetTypesRequest) (*LaunchDatasetSetTypesResponse, error)
+	GetDatasetSetTypesLaunch(context.Context, *GetDatasetSetTypesLaunchRequest) (*GetDatasetSetTypesLaunchResponse, error)
+	LaunchDatasetPreprocess(context.Context, *LaunchDatasetPreprocessRequest) (*LaunchDatasetPreprocessResponse, error)
+	GetDatasetPreprocessLaunch(context.Context, *GetDatasetPreprocessLaunchRequest) (*GetDatasetPreprocessLaunchResponse, error)
+	LaunchTrain(context.Context, *LaunchTrainRequest) (*LaunchTrainResponse, error)
+	GetTrainLaunch(context.Context, *GetTrainLaunchRequest) (*GetTrainLaunchResponse, error)
+	LaunchPredict(context.Context, *LaunchPredictRequest) (*LaunchPredictResponse, error)
+	GetPredictLaunch(context.Context, *GetPredictLaunchRequest) (*GetPredictLaunchResponse, error)
+	LaunchGenericConvert(context.Context, *LaunchGenericConvertRequest) (*LaunchGenericConvertResponse, error)
+	GetGenericConvertLaunch(context.Context, *GetGenericConvertLaunchRequest) (*GetGenericConvertLaunchResponse, error)
+	WaitForLaunchFinish(context.Context, *WaitForLaunchFinishRequest) (*WaitForLaunchFinishResponse, error)
 }
 
 // UnimplementedLauncherServiceServer should be embedded to have forward compatible implementations.
 type UnimplementedLauncherServiceServer struct {
 }
 
-func (UnimplementedLauncherServiceServer) StartTraining(context.Context, *StartTrainingRequest) (*StartTrainingResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StartTraining not implemented")
-}
-func (UnimplementedLauncherServiceServer) StartPrediction(context.Context, *StartPredictionRequest) (*StartPredictionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StartPrediction not implemented")
-}
-func (UnimplementedLauncherServiceServer) StartGenericLaunch(context.Context, *StartGenericLaunchRequest) (*StartGenericLaunchResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StartGenericLaunch not implemented")
-}
 func (UnimplementedLauncherServiceServer) GetLaunches(context.Context, *GetLaunchesRequest) (*GetLaunchesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLaunches not implemented")
 }
-func (UnimplementedLauncherServiceServer) GetTrainResults(context.Context, *GetTrainResultsRequest) (*GetTrainResultsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetTrainResults not implemented")
+func (UnimplementedLauncherServiceServer) LaunchDatasetUpload(context.Context, *LaunchDatasetUploadRequest) (*LaunchDatasetUploadResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LaunchDatasetUpload not implemented")
 }
-func (UnimplementedLauncherServiceServer) GetPredictResults(context.Context, *GetPredictResultsRequest) (*GetPredictResultsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPredictResults not implemented")
+func (UnimplementedLauncherServiceServer) GetDatasetUploadLaunch(context.Context, *GetDatasetUploadLaunchRequest) (*GetDatasetUploadLaunchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDatasetUploadLaunch not implemented")
+}
+func (UnimplementedLauncherServiceServer) LaunchDatasetSetTypes(context.Context, *LaunchDatasetSetTypesRequest) (*LaunchDatasetSetTypesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LaunchDatasetSetTypes not implemented")
+}
+func (UnimplementedLauncherServiceServer) GetDatasetSetTypesLaunch(context.Context, *GetDatasetSetTypesLaunchRequest) (*GetDatasetSetTypesLaunchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDatasetSetTypesLaunch not implemented")
+}
+func (UnimplementedLauncherServiceServer) LaunchDatasetPreprocess(context.Context, *LaunchDatasetPreprocessRequest) (*LaunchDatasetPreprocessResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LaunchDatasetPreprocess not implemented")
+}
+func (UnimplementedLauncherServiceServer) GetDatasetPreprocessLaunch(context.Context, *GetDatasetPreprocessLaunchRequest) (*GetDatasetPreprocessLaunchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDatasetPreprocessLaunch not implemented")
+}
+func (UnimplementedLauncherServiceServer) LaunchTrain(context.Context, *LaunchTrainRequest) (*LaunchTrainResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LaunchTrain not implemented")
+}
+func (UnimplementedLauncherServiceServer) GetTrainLaunch(context.Context, *GetTrainLaunchRequest) (*GetTrainLaunchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTrainLaunch not implemented")
+}
+func (UnimplementedLauncherServiceServer) LaunchPredict(context.Context, *LaunchPredictRequest) (*LaunchPredictResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LaunchPredict not implemented")
+}
+func (UnimplementedLauncherServiceServer) GetPredictLaunch(context.Context, *GetPredictLaunchRequest) (*GetPredictLaunchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPredictLaunch not implemented")
+}
+func (UnimplementedLauncherServiceServer) LaunchGenericConvert(context.Context, *LaunchGenericConvertRequest) (*LaunchGenericConvertResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LaunchGenericConvert not implemented")
+}
+func (UnimplementedLauncherServiceServer) GetGenericConvertLaunch(context.Context, *GetGenericConvertLaunchRequest) (*GetGenericConvertLaunchResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetGenericConvertLaunch not implemented")
+}
+func (UnimplementedLauncherServiceServer) WaitForLaunchFinish(context.Context, *WaitForLaunchFinishRequest) (*WaitForLaunchFinishResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WaitForLaunchFinish not implemented")
 }
 
 // UnsafeLauncherServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -145,60 +265,6 @@ type UnsafeLauncherServiceServer interface {
 
 func RegisterLauncherServiceServer(s grpc.ServiceRegistrar, srv LauncherServiceServer) {
 	s.RegisterService(&LauncherService_ServiceDesc, srv)
-}
-
-func _LauncherService_StartTraining_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StartTrainingRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LauncherServiceServer).StartTraining(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: LauncherService_StartTraining_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LauncherServiceServer).StartTraining(ctx, req.(*StartTrainingRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _LauncherService_StartPrediction_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StartPredictionRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LauncherServiceServer).StartPrediction(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: LauncherService_StartPrediction_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LauncherServiceServer).StartPrediction(ctx, req.(*StartPredictionRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _LauncherService_StartGenericLaunch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StartGenericLaunchRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(LauncherServiceServer).StartGenericLaunch(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: LauncherService_StartGenericLaunch_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LauncherServiceServer).StartGenericLaunch(ctx, req.(*StartGenericLaunchRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _LauncherService_GetLaunches_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -219,38 +285,236 @@ func _LauncherService_GetLaunches_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LauncherService_GetTrainResults_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetTrainResultsRequest)
+func _LauncherService_LaunchDatasetUpload_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LaunchDatasetUploadRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LauncherServiceServer).GetTrainResults(ctx, in)
+		return srv.(LauncherServiceServer).LaunchDatasetUpload(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LauncherService_GetTrainResults_FullMethodName,
+		FullMethod: LauncherService_LaunchDatasetUpload_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LauncherServiceServer).GetTrainResults(ctx, req.(*GetTrainResultsRequest))
+		return srv.(LauncherServiceServer).LaunchDatasetUpload(ctx, req.(*LaunchDatasetUploadRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LauncherService_GetPredictResults_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetPredictResultsRequest)
+func _LauncherService_GetDatasetUploadLaunch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDatasetUploadLaunchRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LauncherServiceServer).GetPredictResults(ctx, in)
+		return srv.(LauncherServiceServer).GetDatasetUploadLaunch(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: LauncherService_GetPredictResults_FullMethodName,
+		FullMethod: LauncherService_GetDatasetUploadLaunch_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LauncherServiceServer).GetPredictResults(ctx, req.(*GetPredictResultsRequest))
+		return srv.(LauncherServiceServer).GetDatasetUploadLaunch(ctx, req.(*GetDatasetUploadLaunchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LauncherService_LaunchDatasetSetTypes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LaunchDatasetSetTypesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LauncherServiceServer).LaunchDatasetSetTypes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LauncherService_LaunchDatasetSetTypes_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LauncherServiceServer).LaunchDatasetSetTypes(ctx, req.(*LaunchDatasetSetTypesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LauncherService_GetDatasetSetTypesLaunch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDatasetSetTypesLaunchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LauncherServiceServer).GetDatasetSetTypesLaunch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LauncherService_GetDatasetSetTypesLaunch_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LauncherServiceServer).GetDatasetSetTypesLaunch(ctx, req.(*GetDatasetSetTypesLaunchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LauncherService_LaunchDatasetPreprocess_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LaunchDatasetPreprocessRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LauncherServiceServer).LaunchDatasetPreprocess(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LauncherService_LaunchDatasetPreprocess_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LauncherServiceServer).LaunchDatasetPreprocess(ctx, req.(*LaunchDatasetPreprocessRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LauncherService_GetDatasetPreprocessLaunch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDatasetPreprocessLaunchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LauncherServiceServer).GetDatasetPreprocessLaunch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LauncherService_GetDatasetPreprocessLaunch_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LauncherServiceServer).GetDatasetPreprocessLaunch(ctx, req.(*GetDatasetPreprocessLaunchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LauncherService_LaunchTrain_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LaunchTrainRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LauncherServiceServer).LaunchTrain(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LauncherService_LaunchTrain_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LauncherServiceServer).LaunchTrain(ctx, req.(*LaunchTrainRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LauncherService_GetTrainLaunch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTrainLaunchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LauncherServiceServer).GetTrainLaunch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LauncherService_GetTrainLaunch_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LauncherServiceServer).GetTrainLaunch(ctx, req.(*GetTrainLaunchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LauncherService_LaunchPredict_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LaunchPredictRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LauncherServiceServer).LaunchPredict(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LauncherService_LaunchPredict_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LauncherServiceServer).LaunchPredict(ctx, req.(*LaunchPredictRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LauncherService_GetPredictLaunch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPredictLaunchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LauncherServiceServer).GetPredictLaunch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LauncherService_GetPredictLaunch_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LauncherServiceServer).GetPredictLaunch(ctx, req.(*GetPredictLaunchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LauncherService_LaunchGenericConvert_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LaunchGenericConvertRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LauncherServiceServer).LaunchGenericConvert(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LauncherService_LaunchGenericConvert_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LauncherServiceServer).LaunchGenericConvert(ctx, req.(*LaunchGenericConvertRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LauncherService_GetGenericConvertLaunch_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetGenericConvertLaunchRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LauncherServiceServer).GetGenericConvertLaunch(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LauncherService_GetGenericConvertLaunch_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LauncherServiceServer).GetGenericConvertLaunch(ctx, req.(*GetGenericConvertLaunchRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _LauncherService_WaitForLaunchFinish_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(WaitForLaunchFinishRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LauncherServiceServer).WaitForLaunchFinish(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LauncherService_WaitForLaunchFinish_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LauncherServiceServer).WaitForLaunchFinish(ctx, req.(*WaitForLaunchFinishRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -263,28 +527,60 @@ var LauncherService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*LauncherServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "StartTraining",
-			Handler:    _LauncherService_StartTraining_Handler,
-		},
-		{
-			MethodName: "StartPrediction",
-			Handler:    _LauncherService_StartPrediction_Handler,
-		},
-		{
-			MethodName: "StartGenericLaunch",
-			Handler:    _LauncherService_StartGenericLaunch_Handler,
-		},
-		{
 			MethodName: "GetLaunches",
 			Handler:    _LauncherService_GetLaunches_Handler,
 		},
 		{
-			MethodName: "GetTrainResults",
-			Handler:    _LauncherService_GetTrainResults_Handler,
+			MethodName: "LaunchDatasetUpload",
+			Handler:    _LauncherService_LaunchDatasetUpload_Handler,
 		},
 		{
-			MethodName: "GetPredictResults",
-			Handler:    _LauncherService_GetPredictResults_Handler,
+			MethodName: "GetDatasetUploadLaunch",
+			Handler:    _LauncherService_GetDatasetUploadLaunch_Handler,
+		},
+		{
+			MethodName: "LaunchDatasetSetTypes",
+			Handler:    _LauncherService_LaunchDatasetSetTypes_Handler,
+		},
+		{
+			MethodName: "GetDatasetSetTypesLaunch",
+			Handler:    _LauncherService_GetDatasetSetTypesLaunch_Handler,
+		},
+		{
+			MethodName: "LaunchDatasetPreprocess",
+			Handler:    _LauncherService_LaunchDatasetPreprocess_Handler,
+		},
+		{
+			MethodName: "GetDatasetPreprocessLaunch",
+			Handler:    _LauncherService_GetDatasetPreprocessLaunch_Handler,
+		},
+		{
+			MethodName: "LaunchTrain",
+			Handler:    _LauncherService_LaunchTrain_Handler,
+		},
+		{
+			MethodName: "GetTrainLaunch",
+			Handler:    _LauncherService_GetTrainLaunch_Handler,
+		},
+		{
+			MethodName: "LaunchPredict",
+			Handler:    _LauncherService_LaunchPredict_Handler,
+		},
+		{
+			MethodName: "GetPredictLaunch",
+			Handler:    _LauncherService_GetPredictLaunch_Handler,
+		},
+		{
+			MethodName: "LaunchGenericConvert",
+			Handler:    _LauncherService_LaunchGenericConvert_Handler,
+		},
+		{
+			MethodName: "GetGenericConvertLaunch",
+			Handler:    _LauncherService_GetGenericConvertLaunch_Handler,
+		},
+		{
+			MethodName: "WaitForLaunchFinish",
+			Handler:    _LauncherService_WaitForLaunchFinish_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -11,6 +11,7 @@ import (
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/hse-experiments-platform/launcher/internal/app/launcher"
+	"github.com/hse-experiments-platform/launcher/internal/pkg/interactions/workers"
 	pb "github.com/hse-experiments-platform/launcher/pkg/launcher"
 	osinit "github.com/hse-experiments-platform/library/pkg/utils/init"
 	"github.com/hse-experiments-platform/library/pkg/utils/loggers"
@@ -74,6 +75,7 @@ func initService(ctx context.Context, maker token.Maker) pb.LauncherServiceServe
 	service := launcher.NewService(
 		initDB(ctx, "DB_CONNECT_STRING"),
 		maker,
+		workers.NewWorkersClient(osinit.MustLoadEnv("WORKERS_ADDR")),
 	)
 
 	return service

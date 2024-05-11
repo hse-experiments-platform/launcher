@@ -1,20 +1,28 @@
 version: "3.8"
 
-name: models
+name: launcher
 
 services:
-  models:
+  launcher:
     build:
       context: ../../
       dockerfile: build/Dockerfile
+    depends_on:
+      - db-migrator
     environment:
       - DOTENV_FILE=configs/dev/.env
       - DB_CONNECT_STRING=postgresql://hseuser:P@ssw0rd@db:5432/hsedb
+      - MODELS_DB_CONNECT_STRING=postgresql://hseuser:P@ssw0rd@modelsdb:5432/modelsdb
     ports:
       - "8087:8087"
       - "8088:8088"
     networks:
       - auth_hse-net
+
+volumes:
+  db-data:
+    driver: local
+
 
 networks:
   auth_hse-net:

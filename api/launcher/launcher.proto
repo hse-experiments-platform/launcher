@@ -35,36 +35,6 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
 };
 
 service LauncherService {
-  rpc StartTraining(StartTrainingRequest) returns (StartTrainingResponse) {
-    option (google.api.http) = {
-      post: "/api/v1/training/start"
-      body: "*";
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      security: {security_requirement: {key: "AccessToken";value: {}}}
-    };
-  };
-
-  rpc StartPrediction(StartPredictionRequest) returns (StartPredictionResponse) {
-    option (google.api.http) = {
-      post: "/api/v1/prediction/start"
-      body: "*";
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      security: {security_requirement: {key: "AccessToken";value: {}}}
-    };
-  };
-
-  rpc StartGenericLaunch(StartGenericLaunchRequest) returns (StartGenericLaunchResponse) {
-    option (google.api.http) = {
-      post: "/api/v1/generic/start"
-      body: "*";
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      security: {security_requirement: {key: "AccessToken";value: {}}}
-    };
-  }
-
   rpc GetLaunches(GetLaunchesRequest) returns (GetLaunchesResponse) {
     option (google.api.http) = {
       get: "/api/v1/launches"
@@ -73,30 +43,279 @@ service LauncherService {
       security: {security_requirement: {key: "AccessToken";value: {}}}
     };
   }
-
-  rpc GetTrainResults(GetTrainResultsRequest) returns (GetTrainResultsResponse) {
+  rpc LaunchDatasetUpload(LaunchDatasetUploadRequest) returns (LaunchDatasetUploadResponse) {
     option (google.api.http) = {
-      get: "/api/v1/launches/trains/{launchID}"
+      post: "/api/v1/launches/dataset_upload"
+      body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       security: {security_requirement: {key: "AccessToken";value: {}}}
     };
   }
 
-  rpc GetPredictResults(GetPredictResultsRequest) returns (GetPredictResultsResponse) {
+  rpc GetDatasetUploadLaunch(GetDatasetUploadLaunchRequest) returns (GetDatasetUploadLaunchResponse) {
     option (google.api.http) = {
-      get: "/api/v1/launches/predicts/{launchID}"
+      get: "/api/v1/launches/dataset_upload/{launchID}"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       security: {security_requirement: {key: "AccessToken";value: {}}}
     };
   }
+
+  rpc LaunchDatasetSetTypes(LaunchDatasetSetTypesRequest) returns (LaunchDatasetSetTypesResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/launches/dataset_set_types"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
+  rpc GetDatasetSetTypesLaunch(GetDatasetSetTypesLaunchRequest) returns (GetDatasetSetTypesLaunchResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/launches/dataset_set_types/{launchID}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
+  rpc LaunchDatasetPreprocess(LaunchDatasetPreprocessRequest) returns (LaunchDatasetPreprocessResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/launches/dataset_preprocess"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
+  rpc GetDatasetPreprocessLaunch(GetDatasetPreprocessLaunchRequest) returns (GetDatasetPreprocessLaunchResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/launches/dataset_preprocess/{launchID}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
+  rpc LaunchTrain(LaunchTrainRequest) returns (LaunchTrainResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/launches/train"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
+  rpc GetTrainLaunch(GetTrainLaunchRequest) returns (GetTrainLaunchResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/launches/train/{launchID}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
+  rpc LaunchPredict(LaunchPredictRequest) returns (LaunchPredictResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/launches/predict"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
+  rpc GetPredictLaunch(GetPredictLaunchRequest) returns (GetPredictLaunchResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/launches/predict/{launchID}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
+  rpc LaunchGenericConvert(LaunchGenericConvertRequest) returns (LaunchGenericConvertResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/launches/generic_convert"
+      body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
+  rpc GetGenericConvertLaunch(GetGenericConvertLaunchRequest) returns (GetGenericConvertLaunchResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/launches/generic_convert/{launchID}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
+  rpc WaitForLaunchFinish(WaitForLaunchFinishRequest) returns (WaitForLaunchFinishResponse) {
+    option (google.api.http) = {
+      post: "/api/v1/launches/{launchID}/wait"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
 }
 
 message PageInfo {
   uint64 offset = 1;
   uint64 limit = 2;
   uint64 total = 3;
+}
+
+enum LaunchStatus {
+  LaunchStatusUnknown = 0;
+  LaunchStatusNotStarted = 1;
+  LaunchStatusInProgress = 2;
+  LaunchStatusError = 3;
+  LaunchStatusSuccess = 4;
+}
+
+enum LaunchType {
+  LaunchTypeUnknown = 0;
+  LaunchTypeDatasetUpload = 1;
+  LaunchTypeDatasetSetTypes = 2;
+  LaunchTypeDatasetPreprocess = 3;
+  LaunchTypeTrain = 4;
+  LaunchTypePredict = 5;
+  LaunchTypeGenericConvert = 6;
+}
+
+message LaunchInfo {
+  uint64 launchID = 1;
+  string name = 2;
+  string description = 3;
+  LaunchType launchType = 4;
+  LaunchStatus status = 5;
+}
+
+message GetLaunchesRequest {
+  uint64 limit = 1;
+  uint64 offset = 2;
+  string nameQuery = 3;
+  LaunchType launchType = 4;
+}
+
+message GetLaunchesResponse{
+  repeated LaunchInfo launches = 1;
+  PageInfo pageInfo = 2;
+}
+
+message CommonLaunchInfo {
+  string name = 1;
+  string description = 2;
+}
+
+message LaunchDatasetUploadRequest {
+  CommonLaunchInfo launchInfo = 1;
+  string url = 2;
+  int64 datasetID = 3;
+}
+
+message LaunchDatasetUploadResponse {
+  int64 launchID = 1;
+}
+
+message GetDatasetUploadLaunchRequest {
+  int64 launchID = 1;
+}
+
+message GetDatasetUploadLaunchResponse {
+  LaunchInfo launchInfo = 1;
+  string error = 2;
+  int64 datasetID = 3;
+  map<string, ColumnType> columnTypes = 4; // автоопределенные типы колонок
+}
+
+enum ColumnType {
+  ColumnTypeUndefined = 0;
+  ColumnTypeInteger = 1;
+  ColumnTypeFloat = 2;
+  ColumnTypeCategorial = 3;
+  ColumnTypeString = 4;
+  ColumnTypeDropped = 5;
+}
+
+enum FillingTechnique {
+  FillingTechniqueUndefined = 0;
+  FillingTechniqueNone = 1;
+  FillingTechniqueConstant = 2;
+  FillingTechniqueTypeDefault = 3;
+  FillingTechniqueAggregateFunction = 4;
+  FillingTechniqueDeleteRow = 5;
+}
+
+enum AggregateFunction {
+  AggregateFunctionUndefined = 0;
+  AggregateFunctionMean = 1;
+  AggregateFunctionMedian = 2;
+  AggregateFunctionMin = 3;
+  AggregateFunctionMax = 4;
+  AggregateFunctionMostFrequent = 5;
+}
+
+message SetTypeSettings {
+  ColumnType type = 1;
+  FillingTechnique fillingTechnique = 2;
+  AggregateFunction aggregateFunction = 3;
+  string fillingValue = 4;
+}
+
+message LaunchDatasetSetTypesRequest {
+  CommonLaunchInfo launchInfo = 1;
+  int64 datasetID = 2;
+  map<string, SetTypeSettings> columnTypes = 3;
+}
+
+message LaunchDatasetSetTypesResponse {
+  int64 launchID = 1;
+}
+
+message GetDatasetSetTypesLaunchRequest {
+  int64 launchID = 1;
+}
+
+message GetDatasetSetTypesLaunchResponse {
+  LaunchInfo launchInfo = 1;
+  string error = 2;
+  int64 datasetID = 3;
+  map<string, ColumnType> columnTypes = 4; // установленные типы колонок
+}
+
+message PreprocessSettings {
+  // TODO: preprocess
+}
+
+message LaunchDatasetPreprocessRequest {
+  CommonLaunchInfo launchInfo = 1;
+  int64 datasetID = 2;
+  PreprocessSettings preprocessSettings = 3;
+}
+
+message LaunchDatasetPreprocessResponse {
+  int64 launchID = 1;
+}
+
+message GetDatasetPreprocessLaunchRequest {
+  int64 launchID = 1;
+}
+
+message GetDatasetPreprocessLaunchResponse {
+  LaunchInfo launchInfo = 1;
+  string error = 2;
+  int64 datasetID = 3;
+  PreprocessSettings preprocessSettings = 4;
 }
 
 message TrainingModelSettings {
@@ -110,16 +329,25 @@ message TrainingDatasetSettings {
   double trainTestSplit = 3;
 }
 
-message StartTrainingRequest {
-  string name = 1;
-  string description = 2;
-  TrainingModelSettings modelSettings = 3;
-  TrainingDatasetSettings datasetSettings = 4;
+message LaunchTrainRequest {
+  CommonLaunchInfo launchInfo = 1;
+  TrainingModelSettings modelSettings = 2;
+  TrainingDatasetSettings datasetSettings = 3;
 }
 
-message StartTrainingResponse {
-  uint64 trainedModelID = 1;
-  uint64 launchID = 2;
+message LaunchTrainResponse {
+  int64 launchID = 1;
+}
+
+message GetTrainLaunchRequest {
+  int64 launchID = 1;
+}
+
+message GetTrainLaunchResponse {
+  LaunchInfo launchInfo = 1;
+  string error = 2;
+  int64 datasetID = 3;
+  int64 trainedModelID = 4;
 }
 
 message PredictionModelSettings {
@@ -128,106 +356,71 @@ message PredictionModelSettings {
 
 message PredictionDatasetSettings {
   uint64 dataset_id = 1;
-  // TODO: drop columns
+  bool usePreprocessingFromTrainDataset = 2;
 }
 
-message StartPredictionRequest {
-  string name = 1;
-  string description = 2;
-  PredictionModelSettings modelSettings = 3;
-  PredictionDatasetSettings datasetSettings = 4;
+message LaunchPredictRequest {
+  CommonLaunchInfo launchInfo = 1;
+  TrainingModelSettings modelSettings = 2;
+  PredictionDatasetSettings datasetSettings = 3;
 }
 
-message StartPredictionResponse {
-  uint64 launchID = 1;
+message LaunchPredictResponse {
+  int64 launchID = 1;
 }
 
-message StartGenericLaunchRequest {
-  string name = 1;
-  string description = 2;
-  uint64 launcherID = 3;
+message GetPredictLaunchRequest {
+  int64 launchID = 1;
 }
 
-message StartGenericLaunchResponse {
-  uint64 launchID = 1;
+message GetPredictLaunchResponse {
+  LaunchInfo launchInfo = 1;
+  string error = 2;
+  int64 datasetID = 3;
+  int64 trainedModelID = 4;
+  int64 resultDatasetID = 5;
 }
 
-enum LaunchType {
-  LaunchTypeUnknown = 0;
-  LaunchTypeTrain = 1;
-  LaunchTypePredict = 2;
-  LaunchTypeGeneric = 3;
+message LaunchGenericConvertRequest {
+  CommonLaunchInfo launchInfo = 1;
+  string s3Object = 2;
+  string converterType = 3;
 }
 
-message LaunchTypeFilter {
-  bool IncludeTrain = 1;
-  bool IncludePredict = 2;
-  bool IncludeGeneric = 3;
+message LaunchGenericConvertResponse {
+  int64 launchID = 1;
 }
 
-message LaunchInfo {
-  uint64 launchID = 1;
-  string name = 2;
-  string description = 3;
-  LaunchType launchType = 4;
+message GetGenericConvertLaunchRequest {
+  int64 launchID = 1;
 }
 
-message GetLaunchesRequest {
-  uint64 limit = 1;
-  uint64 offset = 2;
-  string query = 3;
-  LaunchTypeFilter launchTypes = 4;
+message GetGenericConvertLaunchResponse {
+  LaunchInfo launchInfo = 1;
+  string error = 2;
+  string inputS3Object = 3;
+  string converterType = 4;
+  string outputS3File = 5;
 }
 
-message GetLaunchesResponse{
-  repeated LaunchInfo launches = 1;
-  PageInfo pageInfo = 2;
+message WaitForLaunchFinishRequest {
+  int64 launchID = 1;
 }
 
-message GetTrainResultsRequest {
-  uint64 launchID = 1;
+message WaitForLaunchFinishResponse {
 }
 
-message Metric {
-  uint64 id = 1;
-  string name = 2;
-  string description = 3;
-  string type = 4;
-  string value = 5;
-}
 
-enum TrainStatus {
-  TrainStatusUnknown = 0;
-  TrainStatusNotStarted = 1;
-  TrainStatusInProgress = 2;
-  TrainStatusError = 3;
-  TrainStatusDone = 4;
-}
 
-message GetTrainResultsResponse {
-  uint64 modelID = 1;
-  uint64 trainedModelID = 2;
-  TrainStatus status = 3;
-  repeated Metric metrics = 4;
-}
 
-enum PredictStatus {
-  PredictStatusUnknown = 0;
-  PredictStatusNotStarted = 1;
-  PredictStatusInProgress = 2;
-  PredictStatusError = 3;
-  PredictStatusDone = 4;
-}
 
-message GetPredictResultsRequest {
-  uint64 launchID = 1;
-}
 
-message GetPredictResultsResponse {
-  uint64 trainedModelID = 1;
-  PredictStatus status = 2;
-  uint64 resultDatasetID = 3;
-}
+
+
+
+
+
+
 
 
 
