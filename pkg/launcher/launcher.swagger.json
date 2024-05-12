@@ -600,7 +600,6 @@
       "type": "string",
       "enum": [
         "FillingTechniqueUndefined",
-        "FillingTechniqueNone",
         "FillingTechniqueConstant",
         "FillingTechniqueTypeDefault",
         "FillingTechniqueAggregateFunction",

@@ -249,11 +249,10 @@ enum ColumnType {
 
 enum FillingTechnique {
   FillingTechniqueUndefined = 0;
-  FillingTechniqueNone = 1;
-  FillingTechniqueConstant = 2;
-  FillingTechniqueTypeDefault = 3;
-  FillingTechniqueAggregateFunction = 4;
-  FillingTechniqueDeleteRow = 5;
+  FillingTechniqueConstant = 1;
+  FillingTechniqueTypeDefault = 2;
+  FillingTechniqueAggregateFunction = 3;
+  FillingTechniqueDeleteRow = 4;
 }
 
 enum AggregateFunction {
