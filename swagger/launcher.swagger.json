@@ -642,7 +642,7 @@
         "columnTypes": {
           "type": "object",
           "additionalProperties": {
-            "$ref": "#/definitions/launcherColumnType"
+            "$ref": "#/definitions/launcherSetTypeSettings"
           },
           "title": "установленные типы колонок"
         }
@@ -778,6 +778,10 @@
           "$ref": "#/definitions/launcherCommonLaunchInfo"
         },
         "datasetID": {
+          "type": "string",
+          "format": "int64"
+        },
+        "newDatasetID": {
           "type": "string",
           "format": "int64"
         },

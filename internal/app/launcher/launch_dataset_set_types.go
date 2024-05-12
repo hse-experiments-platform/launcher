@@ -25,12 +25,18 @@ func (s *launcherService) LaunchDatasetSetTypes(ctx context.Context, req *pb.Lau
 		return nil, err
 	}
 
+	bytes, err := json.Marshal(req)
+	if err != nil {
+		return nil, fmt.Errorf("input json.Marshal: %w", err)
+	}
+
 	launchID, err := s.commonDB.CreateLaunch(ctx, db.CreateLaunchParams{
 		LaunchType:   pb.LaunchType_LaunchTypeDatasetSetTypes.String(),
 		UserID:       userID,
 		Name:         req.GetLaunchInfo().GetName(),
 		Description:  req.GetLaunchInfo().GetDescription(),
 		LaunchStatus: pb.LaunchStatus_LaunchStatusNotStarted.String(),
+		Input:        bytes,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("s.commonDB.CreateLaunch: %w", err)
@@ -45,35 +51,40 @@ func (s *launcherService) LaunchDatasetSetTypes(ctx context.Context, req *pb.Lau
 	}, nil
 }
 
-func (s *launcherService) datasetSetTypesLauncher(userID int64, req *pb.LaunchDatasetSetTypesRequest) func(context.Context, int64) error {
-	return func(ctx context.Context, launchID int64) error {
+func (s *launcherService) datasetSetTypesLauncher(userID int64, req *pb.LaunchDatasetSetTypesRequest) func(context.Context, int64) ([]byte, error) {
+	return func(ctx context.Context, launchID int64) ([]byte, error) {
 		body, err := makeSetTypesRequest(launchID, userID, req)
 		if err != nil {
-			return fmt.Errorf("makeSetTypesRequest: %w", err)
+			return nil, fmt.Errorf("makeSetTypesRequest: %w", err)
 		}
 
 		err = s.client.SendDatasetSetTypesTask(ctx, body)
 		if err != nil {
-			return fmt.Errorf("s.client.SendDatasetSetTypesTask: %w", err)
+			return nil, fmt.Errorf("s.client.SendDatasetSetTypesTask: %w", err)
 		}
 
-		return nil
+		return nil, nil
 	}
 }
 
 func makeSetTypesRequest(launchID, userID int64, req *pb.LaunchDatasetSetTypesRequest) (io.Reader, error) {
-	type columnSettings struct {
-		ColumnType        string `json:"column_type"`
-		FillingTechnique  string `json:"filling_technique"`
+	type emptiesSettings struct {
+		Technique         string `json:"technique"`
+		ConstantValue     string `json:"constant_value,omitempty"`
 		AggregateFunction string `json:"aggregate_function,omitempty"`
-		FillingValue      string `json:"filling_value,omitempty"`
+	}
+
+	type columnSettings struct {
+		ColumnType      string          `json:"column_type"`
+		EmptiesSettings emptiesSettings `json:"empties_settings"`
 	}
 
 	var body struct {
-		LaunchID  string                    `json:"launch_id"`
-		UserID    string                    `json:"user_id"`
-		DatasetID string                    `json:"dataset_id"`
-		Schema    map[string]columnSettings `json:"schema"`
+		LaunchID     string                    `json:"launch_id"`
+		UserID       string                    `json:"user_id"`
+		DatasetID    string                    `json:"dataset_id"`
+		NewDatasetID string                    `json:"new_dataset_id"`
+		Schema       map[string]columnSettings `json:"schema"`
 	}
 
 	body.LaunchID = fmt.Sprint(launchID)
@@ -86,10 +97,12 @@ func makeSetTypesRequest(launchID, userID int64, req *pb.LaunchDatasetSetTypesRe
 		aggregateFunction, _ := strings.CutPrefix("AggregateFunction", col.GetAggregateFunction().String())
 
 		body.Schema[columnName] = columnSettings{
-			ColumnType:        colType,
-			FillingTechnique:  fillingTechnique,
-			AggregateFunction: aggregateFunction,
-			FillingValue:      col.GetFillingValue(),
+			ColumnType: colType,
+			EmptiesSettings: emptiesSettings{
+				Technique:         fillingTechnique,
+				ConstantValue:     col.GetFillingValue(),
+				AggregateFunction: aggregateFunction,
+			},
 		}
 	}
 

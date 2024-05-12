@@ -9,9 +9,11 @@ import (
 )
 
 type Querier interface {
+	CheckLaunchStatus(ctx context.Context, arg CheckLaunchStatusParams) (bool, error)
 	CreateLaunch(ctx context.Context, arg CreateLaunchParams) (int64, error)
 	FinishLaunch(ctx context.Context, arg FinishLaunchParams) error
 	GetDatasetCreator(ctx context.Context, id int64) (int64, error)
+	GetLaunch(ctx context.Context, id int64) (GetLaunchRow, error)
 	// launches schema
 	// create table if not exists launches
 	// (

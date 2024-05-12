@@ -11,9 +11,27 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const checkLaunchStatus = `-- name: CheckLaunchStatus :one
+select launch_status = any ($2::text[])
+from launches
+where id = $1
+`
+
+type CheckLaunchStatusParams struct {
+	ID       int64
+	Statuses []string
+}
+
+func (q *Queries) CheckLaunchStatus(ctx context.Context, arg CheckLaunchStatusParams) (bool, error) {
+	row := q.db.QueryRow(ctx, checkLaunchStatus, arg.ID, arg.Statuses)
+	var column_1 bool
+	err := row.Scan(&column_1)
+	return column_1, err
+}
+
 const createLaunch = `-- name: CreateLaunch :one
-insert into launches (launch_type, user_id, name, description, launch_status)
-values ($1, $2, $3, $4, $5)
+insert into launches (launch_type, user_id, name, description, launch_status, input)
+values ($1, $2, $3, $4, $5, $6)
 returning id
 `
 
@@ -23,6 +41,7 @@ type CreateLaunchParams struct {
 	Name         string
 	Description  string
 	LaunchStatus string
+	Input        []byte
 }
 
 func (q *Queries) CreateLaunch(ctx context.Context, arg CreateLaunchParams) (int64, error) {
@@ -32,6 +51,7 @@ func (q *Queries) CreateLaunch(ctx context.Context, arg CreateLaunchParams) (int
 		arg.Name,
 		arg.Description,
 		arg.LaunchStatus,
+		arg.Input,
 	)
 	var id int64
 	err := row.Scan(&id)
@@ -41,9 +61,10 @@ func (q *Queries) CreateLaunch(ctx context.Context, arg CreateLaunchParams) (int
 const finishLaunch = `-- name: FinishLaunch :exec
 update launches
 set launch_status = $2,
-    updated_at = now(),
-    finished_at = now(),
-    launch_error = $3
+    updated_at    = now(),
+    finished_at   = now(),
+    launch_error  = $3,
+    output        = $4
 where id = $1
 `
 
@@ -51,10 +72,16 @@ type FinishLaunchParams struct {
 	ID           int64
 	LaunchStatus string
 	LaunchError  pgtype.Text
+	Output       []byte
 }
 
 func (q *Queries) FinishLaunch(ctx context.Context, arg FinishLaunchParams) error {
-	_, err := q.db.Exec(ctx, finishLaunch, arg.ID, arg.LaunchStatus, arg.LaunchError)
+	_, err := q.db.Exec(ctx, finishLaunch,
+		arg.ID,
+		arg.LaunchStatus,
+		arg.LaunchError,
+		arg.Output,
+	)
 	return err
 }
 
@@ -71,10 +98,51 @@ func (q *Queries) GetDatasetCreator(ctx context.Context, id int64) (int64, error
 	return creator_id, err
 }
 
+const getLaunch = `-- name: GetLaunch :one
+select
+    id,
+    name,
+    description,
+    launch_status,
+    launch_error,
+    launch_type,
+    input,
+    output
+from launches
+where id = $1
+`
+
+type GetLaunchRow struct {
+	ID           int64
+	Name         string
+	Description  string
+	LaunchStatus string
+	LaunchError  pgtype.Text
+	LaunchType   string
+	Input        []byte
+	Output       []byte
+}
+
+func (q *Queries) GetLaunch(ctx context.Context, id int64) (GetLaunchRow, error) {
+	row := q.db.QueryRow(ctx, getLaunch, id)
+	var i GetLaunchRow
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Description,
+		&i.LaunchStatus,
+		&i.LaunchError,
+		&i.LaunchType,
+		&i.Input,
+		&i.Output,
+	)
+	return i, err
+}
+
 const getLaunches = `-- name: GetLaunches :many
 
 
-select id, launch_type, user_id, name, description, created_at, updated_at, finished_at, launch_status, launch_error,
+select id, launch_type, user_id, name, description, created_at, updated_at, finished_at, launch_status, launch_error, input, output,
        count(1) over () as count
 from launches
 where name like '%' || $3 || '%'
@@ -103,6 +171,8 @@ type GetLaunchesRow struct {
 	FinishedAt   pgtype.Timestamptz
 	LaunchStatus string
 	LaunchError  pgtype.Text
+	Input        []byte
+	Output       []byte
 	Count        int64
 }
 
@@ -148,6 +218,8 @@ func (q *Queries) GetLaunches(ctx context.Context, arg GetLaunchesParams) ([]Get
 			&i.FinishedAt,
 			&i.LaunchStatus,
 			&i.LaunchError,
+			&i.Input,
+			&i.Output,
 			&i.Count,
 		); err != nil {
 			return nil, err
@@ -163,7 +235,7 @@ func (q *Queries) GetLaunches(ctx context.Context, arg GetLaunchesParams) ([]Get
 const updateLaunchStatus = `-- name: UpdateLaunchStatus :exec
 update launches
 set launch_status = $2,
-    updated_at = now()
+    updated_at    = now()
 where id = $1
 `
 

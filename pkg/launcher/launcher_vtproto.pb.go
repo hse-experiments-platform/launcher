@@ -594,8 +594,13 @@ func (m *LaunchDatasetSetTypesRequest) MarshalToSizedBufferVT(dAtA []byte) (int,
 			dAtA[i] = 0xa
 			i = protohelpers.EncodeVarint(dAtA, i, uint64(baseI-i))
 			i--
-			dAtA[i] = 0x1a
+			dAtA[i] = 0x22
 		}
+	}
+	if m.NewDatasetID != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.NewDatasetID))
+		i--
+		dAtA[i] = 0x18
 	}
 	if m.DatasetID != 0 {
 		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.DatasetID))
@@ -725,9 +730,14 @@ func (m *GetDatasetSetTypesLaunchResponse) MarshalToSizedBufferVT(dAtA []byte) (
 		for k := range m.ColumnTypes {
 			v := m.ColumnTypes[k]
 			baseI := i
-			i = protohelpers.EncodeVarint(dAtA, i, uint64(v))
+			size, err := v.MarshalToSizedBufferVT(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = protohelpers.EncodeVarint(dAtA, i, uint64(size))
 			i--
-			dAtA[i] = 0x10
+			dAtA[i] = 0x12
 			i -= len(k)
 			copy(dAtA[i:], k)
 			i = protohelpers.EncodeVarint(dAtA, i, uint64(len(k)))
@@ -2084,6 +2094,9 @@ func (m *LaunchDatasetSetTypesRequest) SizeVT() (n int) {
 	if m.DatasetID != 0 {
 		n += 1 + protohelpers.SizeOfVarint(uint64(m.DatasetID))
 	}
+	if m.NewDatasetID != 0 {
+		n += 1 + protohelpers.SizeOfVarint(uint64(m.NewDatasetID))
+	}
 	if len(m.ColumnTypes) > 0 {
 		for k, v := range m.ColumnTypes {
 			_ = k
@@ -2148,7 +2161,12 @@ func (m *GetDatasetSetTypesLaunchResponse) SizeVT() (n int) {
 		for k, v := range m.ColumnTypes {
 			_ = k
 			_ = v
-			mapEntrySize := 1 + len(k) + protohelpers.SizeOfVarint(uint64(len(k))) + 1 + protohelpers.SizeOfVarint(uint64(v))
+			l = 0
+			if v != nil {
+				l = v.SizeVT()
+			}
+			l += 1 + protohelpers.SizeOfVarint(uint64(l))
+			mapEntrySize := 1 + len(k) + protohelpers.SizeOfVarint(uint64(len(k))) + l
 			n += mapEntrySize + 1 + protohelpers.SizeOfVarint(uint64(mapEntrySize))
 		}
 	}
@@ -3966,6 +3984,25 @@ func (m *LaunchDatasetSetTypesRequest) UnmarshalVT(dAtA []byte) error {
 				}
 			}
 		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NewDatasetID", wireType)
+			}
+			m.NewDatasetID = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.NewDatasetID |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ColumnTypes", wireType)
 			}
@@ -4402,10 +4439,10 @@ func (m *GetDatasetSetTypesLaunchResponse) UnmarshalVT(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.ColumnTypes == nil {
-				m.ColumnTypes = make(map[string]ColumnType)
+				m.ColumnTypes = make(map[string]*SetTypeSettings)
 			}
 			var mapkey string
-			var mapvalue ColumnType
+			var mapvalue *SetTypeSettings
 			for iNdEx < postIndex {
 				entryPreIndex := iNdEx
 				var wire uint64
@@ -4454,6 +4491,7 @@ func (m *GetDatasetSetTypesLaunchResponse) UnmarshalVT(dAtA []byte) error {
 					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
 					iNdEx = postStringIndexmapkey
 				} else if fieldNum == 2 {
+					var mapmsglen int
 					for shift := uint(0); ; shift += 7 {
 						if shift >= 64 {
 							return protohelpers.ErrIntOverflow
@@ -4463,11 +4501,26 @@ func (m *GetDatasetSetTypesLaunchResponse) UnmarshalVT(dAtA []byte) error {
 						}
 						b := dAtA[iNdEx]
 						iNdEx++
-						mapvalue |= ColumnType(b&0x7F) << shift
+						mapmsglen |= int(b&0x7F) << shift
 						if b < 0x80 {
 							break
 						}
 					}
+					if mapmsglen < 0 {
+						return protohelpers.ErrInvalidLength
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if postmsgIndex < 0 {
+						return protohelpers.ErrInvalidLength
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &SetTypeSettings{}
+					if err := mapvalue.UnmarshalVT(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
 				} else {
 					iNdEx = entryPreIndex
 					skippy, err := protohelpers.Skip(dAtA[iNdEx:])

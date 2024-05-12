@@ -2,6 +2,7 @@ package workers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -16,7 +17,7 @@ const (
 
 type WorkersClient interface {
 	SendDatasetSetTypesTask(ctx context.Context, body io.Reader) error
-	SendDatasetUploadTask(ctx context.Context, body io.Reader) ([]byte, error)
+	SendDatasetUploadTask(ctx context.Context, body io.Reader) ([]string, error)
 }
 
 type workersClient struct {
@@ -65,7 +66,7 @@ func (w *workersClient) SendDatasetSetTypesTask(ctx context.Context, body io.Rea
 	return nil
 }
 
-func (w *workersClient) SendDatasetUploadTask(ctx context.Context, body io.Reader) ([]byte, error) {
+func (w *workersClient) SendDatasetUploadTask(ctx context.Context, body io.Reader) ([]string, error) {
 	resp, err := w.do(ctx, body, datasetUploadPath)
 	defer func() { _ = resp.Close() }()
 	if err != nil {
@@ -74,10 +75,21 @@ func (w *workersClient) SendDatasetUploadTask(ctx context.Context, body io.Reade
 			return nil, err2
 		} else {
 			log.Error().Err(err).Str("resp", string(bytes)).Msg("error response body")
-			return bytes, fmt.Errorf("w.do: %w", err)
+			return nil, fmt.Errorf("w.do: %w", err)
 		}
 
 	}
 
-	return io.ReadAll(resp)
+	bytes, err := io.ReadAll(resp)
+	if err != nil {
+		return nil, fmt.Errorf("io.ReadAll: %w", err)
+	}
+
+	var output []string
+	err = json.Unmarshal(bytes, &output)
+	if err != nil {
+		return nil, fmt.Errorf("json.Unmarshal: %w", err)
+	}
+
+	return output, nil
 }

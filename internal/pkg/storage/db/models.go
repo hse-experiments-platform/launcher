@@ -100,6 +100,8 @@ type Launch struct {
 	FinishedAt   pgtype.Timestamptz
 	LaunchStatus string
 	LaunchError  pgtype.Text
+	Input        []byte
+	Output       []byte
 }
 
 type Metric struct {

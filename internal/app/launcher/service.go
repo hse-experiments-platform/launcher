@@ -2,6 +2,7 @@ package launcher
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 
@@ -69,4 +70,28 @@ func (s *launcherService) checkDatasetAccess(ctx context.Context, datasetID int6
 	}
 
 	return userID, nil
+}
+
+func parseLaunchInputOutput[InputT any, OutputT any](ctx context.Context, s *launcherService, launchID int64) (db.GetLaunchRow, InputT, OutputT, error) {
+	var input InputT
+	var output OutputT
+
+	launch, err := s.commonDB.GetLaunch(ctx, launchID)
+	if err != nil {
+		return launch, input, output, fmt.Errorf("s.commonDB.GetLaunch: %w", err)
+	}
+
+	err = json.Unmarshal(launch.Input, &input)
+	if err != nil {
+		return launch, input, output, fmt.Errorf("json.Unmarshal input: %w", err)
+	}
+
+	if launch.LaunchStatus == pb.LaunchStatus_LaunchStatusSuccess.String() {
+		err = json.Unmarshal(launch.Output, &output)
+		if err != nil {
+			return launch, input, output, fmt.Errorf("json.Unmarshal output: %w", err)
+		}
+	}
+
+	return launch, input, output, nil
 }

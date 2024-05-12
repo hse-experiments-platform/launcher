@@ -24,27 +24,46 @@ where name like '%' || sqlc.arg(name) || '%'
 order by created_at desc
 limit $1 offset $2;
 
+-- name: GetLaunch :one
+select
+    id,
+    name,
+    description,
+    launch_status,
+    launch_error,
+    launch_type,
+    input,
+    output
+from launches
+where id = $1;
+
 -- name: GetDatasetCreator :one
 select creator_id
 from datasets
 where id = $1;
 
 -- name: CreateLaunch :one
-insert into launches (launch_type, user_id, name, description, launch_status)
-values ($1, $2, $3, $4, $5)
+insert into launches (launch_type, user_id, name, description, launch_status, input)
+values ($1, $2, $3, $4, $5, $6)
 returning id;
 
 -- name: UpdateLaunchStatus :exec
 update launches
 set launch_status = $2,
-    updated_at = now()
+    updated_at    = now()
 where id = $1;
 
 -- name: FinishLaunch :exec
 update launches
 set launch_status = $2,
-    updated_at = now(),
-    finished_at = now(),
-    launch_error = $3
+    updated_at    = now(),
+    finished_at   = now(),
+    launch_error  = $3,
+    output        = $4
+where id = $1;
+
+-- name: CheckLaunchStatus :one
+select launch_status = any (sqlc.arg(statuses)::text[])
+from launches
 where id = $1;
 

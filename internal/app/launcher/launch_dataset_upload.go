@@ -25,12 +25,18 @@ func (s *launcherService) LaunchDatasetUpload(ctx context.Context, req *pb.Launc
 		return nil, err
 	}
 
+	bytes, err := json.Marshal(req)
+	if err != nil {
+		return nil, fmt.Errorf("input json.Marshal: %w", err)
+	}
+
 	launchID, err := s.commonDB.CreateLaunch(ctx, db.CreateLaunchParams{
 		LaunchType:   pb.LaunchType_LaunchTypeDatasetUpload.String(),
 		UserID:       userID,
 		Name:         req.GetLaunchInfo().GetName(),
 		Description:  req.GetLaunchInfo().GetDescription(),
 		LaunchStatus: pb.LaunchStatus_LaunchStatusNotStarted.String(),
+		Input:        bytes,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("s.commonDB.CreateLaunch: %w", err)
@@ -45,21 +51,29 @@ func (s *launcherService) LaunchDatasetUpload(ctx context.Context, req *pb.Launc
 	}, nil
 }
 
-func (s *launcherService) datasetUploadLauncher(userID int64, req *pb.LaunchDatasetUploadRequest) func(context.Context, int64) error {
-	return func(ctx context.Context, launchID int64) error {
+func (s *launcherService) datasetUploadLauncher(userID int64, req *pb.LaunchDatasetUploadRequest) func(context.Context, int64) ([]byte, error) {
+	return func(ctx context.Context, launchID int64) ([]byte, error) {
 		body, err := makeUploadRequest(launchID, userID, req)
 		if err != nil {
-			return fmt.Errorf("makeUploadRequest: %w", err)
+			return nil, fmt.Errorf("makeUploadRequest: %w", err)
 		}
+
+		var bytes []byte
+		var errM error
 
 		resp, err := s.client.SendDatasetUploadTask(ctx, body)
+		if resp != nil {
+			if bytes, errM = json.Marshal(resp); errM != nil {
+				log.Error().Err(errM).Msg("json.Marshal")
+			}
+		}
 		if err != nil {
-			return fmt.Errorf("s.client.SendDatasetSetTypesTask: %w", err)
+			return bytes, fmt.Errorf("s.client.SendDatasetSetTypesTask: %w", err)
 		}
 
-		log.Debug().Str("resp", string(resp)).Msg("response")
+		log.Debug().Str("resp", fmt.Sprint(resp)).Msg("response")
 
-		return nil
+		return bytes, nil
 	}
 }
 

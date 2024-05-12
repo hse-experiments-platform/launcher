@@ -275,7 +275,8 @@ message SetTypeSettings {
 message LaunchDatasetSetTypesRequest {
   CommonLaunchInfo launchInfo = 1;
   int64 datasetID = 2;
-  map<string, SetTypeSettings> columnTypes = 3;
+  int64 newDatasetID = 3;
+  map<string, SetTypeSettings> columnTypes = 4;
 }
 
 message LaunchDatasetSetTypesResponse {
@@ -290,7 +291,7 @@ message GetDatasetSetTypesLaunchResponse {
   LaunchInfo launchInfo = 1;
   string error = 2;
   int64 datasetID = 3;
-  map<string, ColumnType> columnTypes = 4; // установленные типы колонок
+  map<string, SetTypeSettings> columnTypes = 4; // установленные типы колонок
 }
 
 message PreprocessSettings {
