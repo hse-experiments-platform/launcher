@@ -6,11 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"strings"
 
 	"github.com/hse-experiments-platform/launcher/internal/pkg/domain"
 	"github.com/hse-experiments-platform/launcher/internal/pkg/storage/db"
 	pb "github.com/hse-experiments-platform/launcher/pkg/launcher"
+	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -63,7 +63,7 @@ func (s *launcherService) datasetSetTypesLauncher(userID int64, req *pb.LaunchDa
 			return nil, fmt.Errorf("s.client.SendDatasetSetTypesTask: %w", err)
 		}
 
-		return nil, nil
+		return []byte("{}"), nil
 	}
 }
 
@@ -84,19 +84,20 @@ func makeSetTypesRequest(launchID, userID int64, req *pb.LaunchDatasetSetTypesRe
 		UserID       string                    `json:"user_id"`
 		DatasetID    string                    `json:"dataset_id"`
 		NewDatasetID string                    `json:"new_dataset_id"`
-		Schema       map[string]columnSettings `json:"schema"`
+		Settings     map[string]columnSettings `json:"settings"`
 	}
 
 	body.LaunchID = fmt.Sprint(launchID)
 	body.UserID = domain.GetBucketName(userID)
 	body.DatasetID = domain.GetObjectName(req.GetDatasetID())
-	body.Schema = make(map[string]columnSettings, len(req.GetColumnTypes()))
+	body.NewDatasetID = body.DatasetID
+	body.Settings = make(map[string]columnSettings, len(req.GetColumnTypes()))
 	for columnName, col := range req.GetColumnTypes() {
-		colType, _ := strings.CutPrefix("ColumnType", col.GetType().String())
-		fillingTechnique, _ := strings.CutPrefix("FillingTechnique", col.GetFillingTechnique().String())
-		aggregateFunction, _ := strings.CutPrefix("AggregateFunction", col.GetAggregateFunction().String())
+		colType := convertColumnType(col.GetType())
+		fillingTechnique := convertFillingTechnique(col.GetFillingTechnique())
+		aggregateFunction := convertAggregateFunction(col.GetAggregateFunction())
 
-		body.Schema[columnName] = columnSettings{
+		body.Settings[columnName] = columnSettings{
 			ColumnType: colType,
 			EmptiesSettings: emptiesSettings{
 				Technique:         fillingTechnique,
@@ -111,5 +112,54 @@ func makeSetTypesRequest(launchID, userID int64, req *pb.LaunchDatasetSetTypesRe
 		return nil, fmt.Errorf("json.Marshal: %w", err)
 	}
 
+	log.Debug().Str("set_types_request", string(bytes)).Msg("set types request")
+
 	return bytes2.NewReader(bytes), nil
+}
+
+func convertColumnType(columnType pb.ColumnType) string {
+	switch columnType {
+	case pb.ColumnType_ColumnTypeInteger:
+		return "Int"
+	case pb.ColumnType_ColumnTypeFloat:
+		return "Float"
+	case pb.ColumnType_ColumnTypeCategorial:
+		return "Categorial"
+	case pb.ColumnType_ColumnTypeDropped:
+		return "Dropped"
+	default:
+		return ""
+	}
+}
+
+func convertFillingTechnique(fillingTechnique pb.FillingTechnique) string {
+	switch fillingTechnique {
+	case pb.FillingTechnique_FillingTechniqueConstant:
+		return "Constant"
+	case pb.FillingTechnique_FillingTechniqueTypeDefault:
+		return "TypeDefault"
+	case pb.FillingTechnique_FillingTechniqueAggregateFunction:
+		return "AggregateFunction"
+	case pb.FillingTechnique_FillingTechniqueDeleteRow:
+		return "DeleteRow"
+	default:
+		return ""
+	}
+}
+
+func convertAggregateFunction(aggregateFunction pb.AggregateFunction) string {
+	switch aggregateFunction {
+	case pb.AggregateFunction_AggregateFunctionMean:
+		return "Mean"
+	case pb.AggregateFunction_AggregateFunctionMedian:
+		return "Median"
+	case pb.AggregateFunction_AggregateFunctionMin:
+		return "Min"
+	case pb.AggregateFunction_AggregateFunctionMax:
+		return "Max"
+	case pb.AggregateFunction_AggregateFunctionMostFrequent:
+		return "MostFrequent"
+	default:
+		return ""
+	}
 }

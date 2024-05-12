@@ -580,7 +580,6 @@
         "ColumnTypeInteger",
         "ColumnTypeFloat",
         "ColumnTypeCategorial",
-        "ColumnTypeString",
         "ColumnTypeDropped"
       ],
       "default": "ColumnTypeUndefined"
@@ -600,7 +599,6 @@
       "type": "string",
       "enum": [
         "FillingTechniqueUndefined",
-        "FillingTechniqueNone",
         "FillingTechniqueConstant",
         "FillingTechniqueTypeDefault",
         "FillingTechniqueAggregateFunction",

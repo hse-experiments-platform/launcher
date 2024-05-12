@@ -1,13 +1,13 @@
 package domain
 
 import (
-	"strconv"
+	"fmt"
 )
 
 func GetBucketName(userID int64) string {
-	return "user-" + strconv.FormatInt(userID, 10)
+	return fmt.Sprintf("user-%d", userID)
 }
 
 func GetObjectName(datasetID int64) string {
-	return strconv.FormatInt(datasetID, 10)
+	return fmt.Sprintf("%d", datasetID)
 }
