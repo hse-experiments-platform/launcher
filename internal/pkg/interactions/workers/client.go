@@ -52,33 +52,36 @@ func (w *workersClient) do(ctx context.Context, body io.Reader, path string) (io
 
 func (w *workersClient) SendDatasetSetTypesTask(ctx context.Context, body io.Reader) error {
 	resp, err := w.do(ctx, body, datasetSetTypesPath)
-	defer func() { _ = resp.Close() }()
 	if err != nil {
-		if bytes, err := io.ReadAll(resp); err != nil {
-			log.Error().Err(err).Msg("cannot read response body")
-		} else {
-			log.Error().Err(err).Str("resp", string(bytes)).Msg("error response body")
+		if resp != nil {
+			if bytes, err2 := io.ReadAll(resp); err2 != nil {
+				log.Error().Err(err2).Msg("cannot read response body")
+			} else {
+				log.Error().Err(err).Str("resp", string(bytes)).Msg("error response body")
+			}
 		}
 
 		return fmt.Errorf("w.do: %w", err)
 	}
+	defer func() { _ = resp.Close() }()
 
 	return nil
 }
 
 func (w *workersClient) SendDatasetUploadTask(ctx context.Context, body io.Reader) ([]string, error) {
 	resp, err := w.do(ctx, body, datasetUploadPath)
-	defer func() { _ = resp.Close() }()
 	if err != nil {
-		if bytes, err2 := io.ReadAll(resp); err2 != nil {
-			log.Error().Err(err2).Msg("cannot read response body")
-			return nil, err2
-		} else {
-			log.Error().Err(err).Str("resp", string(bytes)).Msg("error response body")
-			return nil, fmt.Errorf("w.do: %w", err)
+		if resp != nil {
+			if bytes, err2 := io.ReadAll(resp); err2 != nil {
+				log.Error().Err(err2).Msg("cannot read response body")
+			} else {
+				log.Error().Err(err).Str("resp", string(bytes)).Msg("error response body")
+			}
 		}
 
+		return nil, fmt.Errorf("w.do: %w", err)
 	}
+	defer func() { _ = resp.Close() }()
 
 	bytes, err := io.ReadAll(resp)
 	if err != nil {

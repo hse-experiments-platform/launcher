@@ -34,6 +34,10 @@ docker-build:
 docker-run:
 	docker compose -f deployments/dev/docker-compose.yaml up --build
 
+.PHONY: docker-light-run
+docker-light-run:
+	docker compose -f deployments/dev/docker-compose.yaml up
+
 .PHONY: docker-run
 docker-run-background:
 	docker compose -f deployments/dev/docker-compose.yaml up --build -d
