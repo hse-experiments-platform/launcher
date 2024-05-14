@@ -742,6 +742,9 @@
         "trainedModelID": {
           "type": "string",
           "format": "int64"
+        },
+        "mlflowRunId": {
+          "type": "string"
         }
       }
     },
@@ -913,6 +916,17 @@
         },
         "datasetSettings": {
           "$ref": "#/definitions/launcherTrainingDatasetSettings"
+        },
+        "useCv": {
+          "type": "boolean"
+        },
+        "cvChunks": {
+          "type": "string",
+          "format": "int64"
+        },
+        "randomSeed": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },

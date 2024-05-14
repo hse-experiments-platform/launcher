@@ -1141,6 +1141,26 @@ func (m *LaunchTrainRequest) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
+	if m.RandomSeed != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.RandomSeed))
+		i--
+		dAtA[i] = 0x30
+	}
+	if m.CvChunks != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.CvChunks))
+		i--
+		dAtA[i] = 0x28
+	}
+	if m.UseCv {
+		i--
+		if m.UseCv {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x20
+	}
 	if m.DatasetSettings != nil {
 		size, err := m.DatasetSettings.MarshalToSizedBufferVT(dAtA[:i])
 		if err != nil {
@@ -1279,6 +1299,13 @@ func (m *GetTrainLaunchResponse) MarshalToSizedBufferVT(dAtA []byte) (int, error
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
+	}
+	if len(m.MlflowRunId) > 0 {
+		i -= len(m.MlflowRunId)
+		copy(dAtA[i:], m.MlflowRunId)
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(len(m.MlflowRunId)))
+		i--
+		dAtA[i] = 0x2a
 	}
 	if m.TrainedModelID != 0 {
 		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.TrainedModelID))
@@ -2315,6 +2342,15 @@ func (m *LaunchTrainRequest) SizeVT() (n int) {
 		l = m.DatasetSettings.SizeVT()
 		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
 	}
+	if m.UseCv {
+		n += 2
+	}
+	if m.CvChunks != 0 {
+		n += 1 + protohelpers.SizeOfVarint(uint64(m.CvChunks))
+	}
+	if m.RandomSeed != 0 {
+		n += 1 + protohelpers.SizeOfVarint(uint64(m.RandomSeed))
+	}
 	n += len(m.unknownFields)
 	return n
 }
@@ -2364,6 +2400,10 @@ func (m *GetTrainLaunchResponse) SizeVT() (n int) {
 	}
 	if m.TrainedModelID != 0 {
 		n += 1 + protohelpers.SizeOfVarint(uint64(m.TrainedModelID))
+	}
+	l = len(m.MlflowRunId)
+	if l > 0 {
+		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
 	}
 	n += len(m.unknownFields)
 	return n
@@ -5500,6 +5540,64 @@ func (m *LaunchTrainRequest) UnmarshalVT(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UseCv", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.UseCv = bool(v != 0)
+		case 5:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CvChunks", wireType)
+			}
+			m.CvChunks = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.CvChunks |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RandomSeed", wireType)
+			}
+			m.RandomSeed = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.RandomSeed |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := protohelpers.Skip(dAtA[iNdEx:])
@@ -5797,6 +5895,38 @@ func (m *GetTrainLaunchResponse) UnmarshalVT(dAtA []byte) error {
 					break
 				}
 			}
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MlflowRunId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MlflowRunId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := protohelpers.Skip(dAtA[iNdEx:])

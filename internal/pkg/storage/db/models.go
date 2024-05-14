@@ -119,6 +119,7 @@ type Model struct {
 	ProblemID   int64
 	CreatedAt   pgtype.Timestamptz
 	UpdatedAt   pgtype.Timestamptz
+	ClassName   pgtype.Text
 }
 
 type Problem struct {
@@ -127,6 +128,18 @@ type Problem struct {
 	Description string
 	CreatedAt   pgtype.Timestamptz
 	UpdatedAt   pgtype.Timestamptz
+}
+
+type TrainedModel struct {
+	ID             int64
+	Name           string
+	Description    string
+	BaseModelID    int64
+	TrainDatasetID int64
+	LaunchID       pgtype.Int8
+	TargetCol      string
+	CreatedAt      pgtype.Timestamptz
+	UpdatedAt      pgtype.Timestamptz
 }
 
 type User struct {

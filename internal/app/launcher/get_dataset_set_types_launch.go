@@ -8,6 +8,10 @@ import (
 )
 
 func (s *launcherService) GetDatasetSetTypesLaunch(ctx context.Context, req *pb.GetDatasetSetTypesLaunchRequest) (*pb.GetDatasetSetTypesLaunchResponse, error) {
+	if err := s.checkLaunch(ctx, req.GetLaunchID(), pb.LaunchType_LaunchTypeDatasetSetTypes); err != nil {
+		return nil, err
+	}
+
 	launch, input, _, err := parseLaunchInputOutput[pb.LaunchDatasetSetTypesRequest, any](ctx, s, req.GetLaunchID())
 	if err != nil {
 		return nil, fmt.Errorf("parseLaunchInputOutput: %w", err)

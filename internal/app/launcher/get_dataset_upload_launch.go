@@ -8,6 +8,10 @@ import (
 )
 
 func (s *launcherService) GetDatasetUploadLaunch(ctx context.Context, req *pb.GetDatasetUploadLaunchRequest) (*pb.GetDatasetUploadLaunchResponse, error) {
+	if err := s.checkLaunch(ctx, req.GetLaunchID(), pb.LaunchType_LaunchTypeDatasetUpload); err != nil {
+		return nil, err
+	}
+
 	launch, input, output, err := parseLaunchInputOutput[pb.LaunchDatasetUploadRequest, []string](ctx, s, req.GetLaunchID())
 	if err != nil {
 		return nil, fmt.Errorf("parseLaunchInputOutput: %w", err)
