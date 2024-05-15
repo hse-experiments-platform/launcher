@@ -19,20 +19,21 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	LauncherService_GetLaunches_FullMethodName                = "/github.hse_experiments_platform.launcher.LauncherService/GetLaunches"
-	LauncherService_LaunchDatasetUpload_FullMethodName        = "/github.hse_experiments_platform.launcher.LauncherService/LaunchDatasetUpload"
-	LauncherService_GetDatasetUploadLaunch_FullMethodName     = "/github.hse_experiments_platform.launcher.LauncherService/GetDatasetUploadLaunch"
-	LauncherService_LaunchDatasetSetTypes_FullMethodName      = "/github.hse_experiments_platform.launcher.LauncherService/LaunchDatasetSetTypes"
-	LauncherService_GetDatasetSetTypesLaunch_FullMethodName   = "/github.hse_experiments_platform.launcher.LauncherService/GetDatasetSetTypesLaunch"
-	LauncherService_LaunchDatasetPreprocess_FullMethodName    = "/github.hse_experiments_platform.launcher.LauncherService/LaunchDatasetPreprocess"
-	LauncherService_GetDatasetPreprocessLaunch_FullMethodName = "/github.hse_experiments_platform.launcher.LauncherService/GetDatasetPreprocessLaunch"
-	LauncherService_LaunchTrain_FullMethodName                = "/github.hse_experiments_platform.launcher.LauncherService/LaunchTrain"
-	LauncherService_GetTrainLaunch_FullMethodName             = "/github.hse_experiments_platform.launcher.LauncherService/GetTrainLaunch"
-	LauncherService_LaunchPredict_FullMethodName              = "/github.hse_experiments_platform.launcher.LauncherService/LaunchPredict"
-	LauncherService_GetPredictLaunch_FullMethodName           = "/github.hse_experiments_platform.launcher.LauncherService/GetPredictLaunch"
-	LauncherService_LaunchGenericConvert_FullMethodName       = "/github.hse_experiments_platform.launcher.LauncherService/LaunchGenericConvert"
-	LauncherService_GetGenericConvertLaunch_FullMethodName    = "/github.hse_experiments_platform.launcher.LauncherService/GetGenericConvertLaunch"
-	LauncherService_WaitForLaunchFinish_FullMethodName        = "/github.hse_experiments_platform.launcher.LauncherService/WaitForLaunchFinish"
+	LauncherService_GetLaunches_FullMethodName                     = "/github.hse_experiments_platform.launcher.LauncherService/GetLaunches"
+	LauncherService_LaunchDatasetUpload_FullMethodName             = "/github.hse_experiments_platform.launcher.LauncherService/LaunchDatasetUpload"
+	LauncherService_GetDatasetUploadLaunch_FullMethodName          = "/github.hse_experiments_platform.launcher.LauncherService/GetDatasetUploadLaunch"
+	LauncherService_LaunchDatasetSetTypes_FullMethodName           = "/github.hse_experiments_platform.launcher.LauncherService/LaunchDatasetSetTypes"
+	LauncherService_GetDatasetSetTypesLaunch_FullMethodName        = "/github.hse_experiments_platform.launcher.LauncherService/GetDatasetSetTypesLaunch"
+	LauncherService_LaunchDatasetPreprocess_FullMethodName         = "/github.hse_experiments_platform.launcher.LauncherService/LaunchDatasetPreprocess"
+	LauncherService_GetDatasetPreprocessLaunch_FullMethodName      = "/github.hse_experiments_platform.launcher.LauncherService/GetDatasetPreprocessLaunch"
+	LauncherService_LaunchTrain_FullMethodName                     = "/github.hse_experiments_platform.launcher.LauncherService/LaunchTrain"
+	LauncherService_GetTrainLaunch_FullMethodName                  = "/github.hse_experiments_platform.launcher.LauncherService/GetTrainLaunch"
+	LauncherService_LaunchPredict_FullMethodName                   = "/github.hse_experiments_platform.launcher.LauncherService/LaunchPredict"
+	LauncherService_GetPredictLaunch_FullMethodName                = "/github.hse_experiments_platform.launcher.LauncherService/GetPredictLaunch"
+	LauncherService_GetPredictionResultDownloadLink_FullMethodName = "/github.hse_experiments_platform.launcher.LauncherService/GetPredictionResultDownloadLink"
+	LauncherService_LaunchGenericConvert_FullMethodName            = "/github.hse_experiments_platform.launcher.LauncherService/LaunchGenericConvert"
+	LauncherService_GetGenericConvertLaunch_FullMethodName         = "/github.hse_experiments_platform.launcher.LauncherService/GetGenericConvertLaunch"
+	LauncherService_WaitForLaunchFinish_FullMethodName             = "/github.hse_experiments_platform.launcher.LauncherService/WaitForLaunchFinish"
 )
 
 // LauncherServiceClient is the client API for LauncherService service.
@@ -50,6 +51,7 @@ type LauncherServiceClient interface {
 	GetTrainLaunch(ctx context.Context, in *GetTrainLaunchRequest, opts ...grpc.CallOption) (*GetTrainLaunchResponse, error)
 	LaunchPredict(ctx context.Context, in *LaunchPredictRequest, opts ...grpc.CallOption) (*LaunchPredictResponse, error)
 	GetPredictLaunch(ctx context.Context, in *GetPredictLaunchRequest, opts ...grpc.CallOption) (*GetPredictLaunchResponse, error)
+	GetPredictionResultDownloadLink(ctx context.Context, in *GetPredictionResultDownloadLinkRequest, opts ...grpc.CallOption) (*GetPredictionResultDownloadLinkResponse, error)
 	LaunchGenericConvert(ctx context.Context, in *LaunchGenericConvertRequest, opts ...grpc.CallOption) (*LaunchGenericConvertResponse, error)
 	GetGenericConvertLaunch(ctx context.Context, in *GetGenericConvertLaunchRequest, opts ...grpc.CallOption) (*GetGenericConvertLaunchResponse, error)
 	WaitForLaunchFinish(ctx context.Context, in *WaitForLaunchFinishRequest, opts ...grpc.CallOption) (*WaitForLaunchFinishResponse, error)
@@ -162,6 +164,15 @@ func (c *launcherServiceClient) GetPredictLaunch(ctx context.Context, in *GetPre
 	return out, nil
 }
 
+func (c *launcherServiceClient) GetPredictionResultDownloadLink(ctx context.Context, in *GetPredictionResultDownloadLinkRequest, opts ...grpc.CallOption) (*GetPredictionResultDownloadLinkResponse, error) {
+	out := new(GetPredictionResultDownloadLinkResponse)
+	err := c.cc.Invoke(ctx, LauncherService_GetPredictionResultDownloadLink_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *launcherServiceClient) LaunchGenericConvert(ctx context.Context, in *LaunchGenericConvertRequest, opts ...grpc.CallOption) (*LaunchGenericConvertResponse, error) {
 	out := new(LaunchGenericConvertResponse)
 	err := c.cc.Invoke(ctx, LauncherService_LaunchGenericConvert_FullMethodName, in, out, opts...)
@@ -204,6 +215,7 @@ type LauncherServiceServer interface {
 	GetTrainLaunch(context.Context, *GetTrainLaunchRequest) (*GetTrainLaunchResponse, error)
 	LaunchPredict(context.Context, *LaunchPredictRequest) (*LaunchPredictResponse, error)
 	GetPredictLaunch(context.Context, *GetPredictLaunchRequest) (*GetPredictLaunchResponse, error)
+	GetPredictionResultDownloadLink(context.Context, *GetPredictionResultDownloadLinkRequest) (*GetPredictionResultDownloadLinkResponse, error)
 	LaunchGenericConvert(context.Context, *LaunchGenericConvertRequest) (*LaunchGenericConvertResponse, error)
 	GetGenericConvertLaunch(context.Context, *GetGenericConvertLaunchRequest) (*GetGenericConvertLaunchResponse, error)
 	WaitForLaunchFinish(context.Context, *WaitForLaunchFinishRequest) (*WaitForLaunchFinishResponse, error)
@@ -245,6 +257,9 @@ func (UnimplementedLauncherServiceServer) LaunchPredict(context.Context, *Launch
 }
 func (UnimplementedLauncherServiceServer) GetPredictLaunch(context.Context, *GetPredictLaunchRequest) (*GetPredictLaunchResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPredictLaunch not implemented")
+}
+func (UnimplementedLauncherServiceServer) GetPredictionResultDownloadLink(context.Context, *GetPredictionResultDownloadLinkRequest) (*GetPredictionResultDownloadLinkResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPredictionResultDownloadLink not implemented")
 }
 func (UnimplementedLauncherServiceServer) LaunchGenericConvert(context.Context, *LaunchGenericConvertRequest) (*LaunchGenericConvertResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LaunchGenericConvert not implemented")
@@ -465,6 +480,24 @@ func _LauncherService_GetPredictLaunch_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _LauncherService_GetPredictionResultDownloadLink_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPredictionResultDownloadLinkRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LauncherServiceServer).GetPredictionResultDownloadLink(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: LauncherService_GetPredictionResultDownloadLink_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LauncherServiceServer).GetPredictionResultDownloadLink(ctx, req.(*GetPredictionResultDownloadLinkRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _LauncherService_LaunchGenericConvert_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(LaunchGenericConvertRequest)
 	if err := dec(in); err != nil {
@@ -569,6 +602,10 @@ var LauncherService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPredictLaunch",
 			Handler:    _LauncherService_GetPredictLaunch_Handler,
+		},
+		{
+			MethodName: "GetPredictionResultDownloadLink",
+			Handler:    _LauncherService_GetPredictionResultDownloadLink_Handler,
 		},
 		{
 			MethodName: "LaunchGenericConvert",

@@ -457,6 +457,58 @@ func local_request_LauncherService_GetPredictLaunch_0(ctx context.Context, marsh
 
 }
 
+func request_LauncherService_GetPredictionResultDownloadLink_0(ctx context.Context, marshaler runtime.Marshaler, client LauncherServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetPredictionResultDownloadLinkRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["launchID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "launchID")
+	}
+
+	protoReq.LaunchID, err = runtime.Int64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "launchID", err)
+	}
+
+	msg, err := client.GetPredictionResultDownloadLink(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_LauncherService_GetPredictionResultDownloadLink_0(ctx context.Context, marshaler runtime.Marshaler, server LauncherServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetPredictionResultDownloadLinkRequest
+	var metadata runtime.ServerMetadata
+
+	var (
+		val string
+		ok  bool
+		err error
+		_   = err
+	)
+
+	val, ok = pathParams["launchID"]
+	if !ok {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "missing parameter %s", "launchID")
+	}
+
+	protoReq.LaunchID, err = runtime.Int64(val)
+	if err != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "type mismatch, parameter: %s, error: %v", "launchID", err)
+	}
+
+	msg, err := server.GetPredictionResultDownloadLink(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_LauncherService_LaunchGenericConvert_0(ctx context.Context, marshaler runtime.Marshaler, client LauncherServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq LaunchGenericConvertRequest
 	var metadata runtime.ServerMetadata
@@ -868,6 +920,31 @@ func RegisterLauncherServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 
 	})
 
+	mux.Handle("GET", pattern_LauncherService_GetPredictionResultDownloadLink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateIncomingContext(ctx, mux, req, "/github.hse_experiments_platform.launcher.LauncherService/GetPredictionResultDownloadLink", runtime.WithHTTPPathPattern("/api/v1/launches/predict/{launchID}/download"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_LauncherService_GetPredictionResultDownloadLink_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_LauncherService_GetPredictionResultDownloadLink_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_LauncherService_LaunchGenericConvert_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1226,6 +1303,28 @@ func RegisterLauncherServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 
 	})
 
+	mux.Handle("GET", pattern_LauncherService_GetPredictionResultDownloadLink_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		var err error
+		var annotatedContext context.Context
+		annotatedContext, err = runtime.AnnotateContext(ctx, mux, req, "/github.hse_experiments_platform.launcher.LauncherService/GetPredictionResultDownloadLink", runtime.WithHTTPPathPattern("/api/v1/launches/predict/{launchID}/download"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_LauncherService_GetPredictionResultDownloadLink_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_LauncherService_GetPredictionResultDownloadLink_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_LauncherService_LaunchGenericConvert_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -1318,6 +1417,8 @@ var (
 
 	pattern_LauncherService_GetPredictLaunch_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"api", "v1", "launches", "predict", "launchID"}, ""))
 
+	pattern_LauncherService_GetPredictionResultDownloadLink_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"api", "v1", "launches", "predict", "launchID", "download"}, ""))
+
 	pattern_LauncherService_LaunchGenericConvert_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"api", "v1", "launches", "generic_convert"}, ""))
 
 	pattern_LauncherService_GetGenericConvertLaunch_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"api", "v1", "launches", "generic_convert", "launchID"}, ""))
@@ -1347,6 +1448,8 @@ var (
 	forward_LauncherService_LaunchPredict_0 = runtime.ForwardResponseMessage
 
 	forward_LauncherService_GetPredictLaunch_0 = runtime.ForwardResponseMessage
+
+	forward_LauncherService_GetPredictionResultDownloadLink_0 = runtime.ForwardResponseMessage
 
 	forward_LauncherService_LaunchGenericConvert_0 = runtime.ForwardResponseMessage
 

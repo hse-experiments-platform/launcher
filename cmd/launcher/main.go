@@ -12,6 +12,7 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/hse-experiments-platform/launcher/internal/app/launcher"
 	"github.com/hse-experiments-platform/launcher/internal/pkg/interactions/workers"
+	"github.com/hse-experiments-platform/launcher/internal/pkg/storage/s3"
 	pb "github.com/hse-experiments-platform/launcher/pkg/launcher"
 	osinit "github.com/hse-experiments-platform/library/pkg/utils/init"
 	"github.com/hse-experiments-platform/library/pkg/utils/loggers"
@@ -19,6 +20,8 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/rs/cors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -33,6 +36,22 @@ func loadEnv() {
 	if err := godotenv.Load(file); err != nil {
 		log.Error().Err(err).Msg("cannot load env variables")
 	}
+}
+
+func initMinio() *minio.Client {
+	endpoint := osinit.MustLoadEnv("MINIO_ADDR")
+	accessKeyID := osinit.MustLoadEnv("MINIO_USER")
+	secretAccessKey := osinit.MustLoadEnv("MINIO_PASSWORD")
+
+	// Initialize minio client object.
+	minioClient, err := minio.New(endpoint, &minio.Options{
+		Creds: credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
+	})
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot init minio client")
+	}
+
+	return minioClient
 }
 
 func initDB(ctx context.Context, dsnOSKey string, loadTypes ...string) *pgxpool.Pool {
@@ -76,6 +95,7 @@ func initService(ctx context.Context, maker token.Maker) pb.LauncherServiceServe
 		initDB(ctx, "DB_CONNECT_STRING"),
 		maker,
 		workers.NewWorkersClient(osinit.MustLoadEnv("WORKERS_ADDR")),
+		s3.NewMinioStorage(initMinio()),
 	)
 
 	return service

@@ -1151,9 +1151,9 @@ func (m *LaunchTrainRequest) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x28
 	}
-	if m.UseCv {
+	if m.UseCV {
 		i--
-		if m.UseCv {
+		if m.UseCV {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
@@ -1300,10 +1300,10 @@ func (m *GetTrainLaunchResponse) MarshalToSizedBufferVT(dAtA []byte) (int, error
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
-	if len(m.MlflowRunId) > 0 {
-		i -= len(m.MlflowRunId)
-		copy(dAtA[i:], m.MlflowRunId)
-		i = protohelpers.EncodeVarint(dAtA, i, uint64(len(m.MlflowRunId)))
+	if len(m.MlflowRunID) > 0 {
+		i -= len(m.MlflowRunID)
+		copy(dAtA[i:], m.MlflowRunID)
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(len(m.MlflowRunID)))
 		i--
 		dAtA[i] = 0x2a
 	}
@@ -1453,25 +1453,15 @@ func (m *LaunchPredictRequest) MarshalToSizedBufferVT(dAtA []byte) (int, error) 
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
-	if m.DatasetSettings != nil {
-		size, err := m.DatasetSettings.MarshalToSizedBufferVT(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = protohelpers.EncodeVarint(dAtA, i, uint64(size))
+	if m.DatasetID != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.DatasetID))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x18
 	}
-	if m.ModelSettings != nil {
-		size, err := m.ModelSettings.MarshalToSizedBufferVT(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = protohelpers.EncodeVarint(dAtA, i, uint64(size))
+	if m.TrainedModelID != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.TrainedModelID))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x10
 	}
 	if m.LaunchInfo != nil {
 		size, err := m.LaunchInfo.MarshalToSizedBufferVT(dAtA[:i])
@@ -1591,11 +1581,6 @@ func (m *GetPredictLaunchResponse) MarshalToSizedBufferVT(dAtA []byte) (int, err
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
-	}
-	if m.ResultDatasetID != 0 {
-		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.ResultDatasetID))
-		i--
-		dAtA[i] = 0x28
 	}
 	if m.TrainedModelID != 0 {
 		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.TrainedModelID))
@@ -1898,6 +1883,84 @@ func (m *WaitForLaunchFinishResponse) MarshalToSizedBufferVT(dAtA []byte) (int, 
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetPredictionResultDownloadLinkRequest) MarshalVT() (dAtA []byte, err error) {
+	if m == nil {
+		return nil, nil
+	}
+	size := m.SizeVT()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBufferVT(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetPredictionResultDownloadLinkRequest) MarshalToVT(dAtA []byte) (int, error) {
+	size := m.SizeVT()
+	return m.MarshalToSizedBufferVT(dAtA[:size])
+}
+
+func (m *GetPredictionResultDownloadLinkRequest) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+	if m == nil {
+		return 0, nil
+	}
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.unknownFields != nil {
+		i -= len(m.unknownFields)
+		copy(dAtA[i:], m.unknownFields)
+	}
+	if m.LaunchID != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.LaunchID))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetPredictionResultDownloadLinkResponse) MarshalVT() (dAtA []byte, err error) {
+	if m == nil {
+		return nil, nil
+	}
+	size := m.SizeVT()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBufferVT(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetPredictionResultDownloadLinkResponse) MarshalToVT(dAtA []byte) (int, error) {
+	size := m.SizeVT()
+	return m.MarshalToSizedBufferVT(dAtA[:size])
+}
+
+func (m *GetPredictionResultDownloadLinkResponse) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+	if m == nil {
+		return 0, nil
+	}
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.unknownFields != nil {
+		i -= len(m.unknownFields)
+		copy(dAtA[i:], m.unknownFields)
+	}
+	if len(m.DownloadLink) > 0 {
+		i -= len(m.DownloadLink)
+		copy(dAtA[i:], m.DownloadLink)
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(len(m.DownloadLink)))
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -2342,7 +2405,7 @@ func (m *LaunchTrainRequest) SizeVT() (n int) {
 		l = m.DatasetSettings.SizeVT()
 		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
 	}
-	if m.UseCv {
+	if m.UseCV {
 		n += 2
 	}
 	if m.CvChunks != 0 {
@@ -2401,7 +2464,7 @@ func (m *GetTrainLaunchResponse) SizeVT() (n int) {
 	if m.TrainedModelID != 0 {
 		n += 1 + protohelpers.SizeOfVarint(uint64(m.TrainedModelID))
 	}
-	l = len(m.MlflowRunId)
+	l = len(m.MlflowRunID)
 	if l > 0 {
 		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
 	}
@@ -2448,13 +2511,11 @@ func (m *LaunchPredictRequest) SizeVT() (n int) {
 		l = m.LaunchInfo.SizeVT()
 		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
 	}
-	if m.ModelSettings != nil {
-		l = m.ModelSettings.SizeVT()
-		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
+	if m.TrainedModelID != 0 {
+		n += 1 + protohelpers.SizeOfVarint(uint64(m.TrainedModelID))
 	}
-	if m.DatasetSettings != nil {
-		l = m.DatasetSettings.SizeVT()
-		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
+	if m.DatasetID != 0 {
+		n += 1 + protohelpers.SizeOfVarint(uint64(m.DatasetID))
 	}
 	n += len(m.unknownFields)
 	return n
@@ -2505,9 +2566,6 @@ func (m *GetPredictLaunchResponse) SizeVT() (n int) {
 	}
 	if m.TrainedModelID != 0 {
 		n += 1 + protohelpers.SizeOfVarint(uint64(m.TrainedModelID))
-	}
-	if m.ResultDatasetID != 0 {
-		n += 1 + protohelpers.SizeOfVarint(uint64(m.ResultDatasetID))
 	}
 	n += len(m.unknownFields)
 	return n
@@ -2610,6 +2668,33 @@ func (m *WaitForLaunchFinishResponse) SizeVT() (n int) {
 	}
 	var l int
 	_ = l
+	n += len(m.unknownFields)
+	return n
+}
+
+func (m *GetPredictionResultDownloadLinkRequest) SizeVT() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.LaunchID != 0 {
+		n += 1 + protohelpers.SizeOfVarint(uint64(m.LaunchID))
+	}
+	n += len(m.unknownFields)
+	return n
+}
+
+func (m *GetPredictionResultDownloadLinkResponse) SizeVT() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.DownloadLink)
+	if l > 0 {
+		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
+	}
 	n += len(m.unknownFields)
 	return n
 }
@@ -5542,7 +5627,7 @@ func (m *LaunchTrainRequest) UnmarshalVT(dAtA []byte) error {
 			iNdEx = postIndex
 		case 4:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field UseCv", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field UseCV", wireType)
 			}
 			var v int
 			for shift := uint(0); ; shift += 7 {
@@ -5559,7 +5644,7 @@ func (m *LaunchTrainRequest) UnmarshalVT(dAtA []byte) error {
 					break
 				}
 			}
-			m.UseCv = bool(v != 0)
+			m.UseCV = bool(v != 0)
 		case 5:
 			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field CvChunks", wireType)
@@ -5897,7 +5982,7 @@ func (m *GetTrainLaunchResponse) UnmarshalVT(dAtA []byte) error {
 			}
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field MlflowRunId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field MlflowRunID", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -5925,7 +6010,7 @@ func (m *GetTrainLaunchResponse) UnmarshalVT(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.MlflowRunId = string(dAtA[iNdEx:postIndex])
+			m.MlflowRunID = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -6175,10 +6260,10 @@ func (m *LaunchPredictRequest) UnmarshalVT(dAtA []byte) error {
 			}
 			iNdEx = postIndex
 		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ModelSettings", wireType)
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field TrainedModelID", wireType)
 			}
-			var msglen int
+			m.TrainedModelID = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return protohelpers.ErrIntOverflow
@@ -6188,33 +6273,16 @@ func (m *LaunchPredictRequest) UnmarshalVT(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				m.TrainedModelID |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
-				return protohelpers.ErrInvalidLength
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return protohelpers.ErrInvalidLength
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.ModelSettings == nil {
-				m.ModelSettings = &TrainingModelSettings{}
-			}
-			if err := m.ModelSettings.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field DatasetSettings", wireType)
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DatasetID", wireType)
 			}
-			var msglen int
+			m.DatasetID = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return protohelpers.ErrIntOverflow
@@ -6224,28 +6292,11 @@ func (m *LaunchPredictRequest) UnmarshalVT(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				m.DatasetID |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
-				return protohelpers.ErrInvalidLength
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return protohelpers.ErrInvalidLength
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.DatasetSettings == nil {
-				m.DatasetSettings = &PredictionDatasetSettings{}
-			}
-			if err := m.DatasetSettings.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := protohelpers.Skip(dAtA[iNdEx:])
@@ -6539,25 +6590,6 @@ func (m *GetPredictLaunchResponse) UnmarshalVT(dAtA []byte) error {
 				b := dAtA[iNdEx]
 				iNdEx++
 				m.TrainedModelID |= int64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ResultDatasetID", wireType)
-			}
-			m.ResultDatasetID = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protohelpers.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.ResultDatasetID |= int64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -7189,6 +7221,159 @@ func (m *WaitForLaunchFinishResponse) UnmarshalVT(dAtA []byte) error {
 			return fmt.Errorf("proto: WaitForLaunchFinishResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := protohelpers.Skip(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.unknownFields = append(m.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetPredictionResultDownloadLinkRequest) UnmarshalVT(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return protohelpers.ErrIntOverflow
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetPredictionResultDownloadLinkRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetPredictionResultDownloadLinkRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LaunchID", wireType)
+			}
+			m.LaunchID = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LaunchID |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := protohelpers.Skip(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.unknownFields = append(m.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetPredictionResultDownloadLinkResponse) UnmarshalVT(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return protohelpers.ErrIntOverflow
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetPredictionResultDownloadLinkResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetPredictionResultDownloadLinkResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DownloadLink", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DownloadLink = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := protohelpers.Skip(dAtA[iNdEx:])

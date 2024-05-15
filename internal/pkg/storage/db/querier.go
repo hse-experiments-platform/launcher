@@ -24,6 +24,7 @@ type Querier interface {
 	GetModelHyperparameters(ctx context.Context, id int64) ([]GetModelHyperparametersRow, error)
 	GetModelMetrics(ctx context.Context, id int64) ([]string, error)
 	GetTrainedModelIDByLaunchID(ctx context.Context, launchID pgtype.Int8) (int64, error)
+	GetTrainedModelRunID(ctx context.Context, id int64) ([]byte, error)
 	UpdateLaunchStatus(ctx context.Context, arg UpdateLaunchStatusParams) error
 }
 

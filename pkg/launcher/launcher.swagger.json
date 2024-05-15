@@ -450,6 +450,42 @@
         ]
       }
     },
+    "/api/v1/launches/predict/{launchID}/download": {
+      "get": {
+        "operationId": "LauncherService_GetPredictionResultDownloadLink",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/launcherGetPredictionResultDownloadLinkResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "launchID",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "LauncherService"
+        ],
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ]
+      }
+    },
     "/api/v1/launches/train": {
       "post": {
         "operationId": "LauncherService_LaunchTrain",
@@ -719,10 +755,14 @@
         "trainedModelID": {
           "type": "string",
           "format": "int64"
-        },
-        "resultDatasetID": {
-          "type": "string",
-          "format": "int64"
+        }
+      }
+    },
+    "launcherGetPredictionResultDownloadLinkResponse": {
+      "type": "object",
+      "properties": {
+        "downloadLink": {
+          "type": "string"
         }
       }
     },
@@ -743,7 +783,7 @@
           "type": "string",
           "format": "int64"
         },
-        "mlflowRunId": {
+        "mlflowRunID": {
           "type": "string"
         }
       }
@@ -877,11 +917,13 @@
         "launchInfo": {
           "$ref": "#/definitions/launcherCommonLaunchInfo"
         },
-        "modelSettings": {
-          "$ref": "#/definitions/launcherTrainingModelSettings"
+        "trainedModelID": {
+          "type": "string",
+          "format": "int64"
         },
-        "datasetSettings": {
-          "$ref": "#/definitions/launcherPredictionDatasetSettings"
+        "datasetID": {
+          "type": "string",
+          "format": "int64"
         }
       }
     },
@@ -917,7 +959,7 @@
         "datasetSettings": {
           "$ref": "#/definitions/launcherTrainingDatasetSettings"
         },
-        "useCv": {
+        "useCV": {
           "type": "boolean"
         },
         "cvChunks": {
@@ -966,18 +1008,6 @@
         "total": {
           "type": "string",
           "format": "uint64"
-        }
-      }
-    },
-    "launcherPredictionDatasetSettings": {
-      "type": "object",
-      "properties": {
-        "datasetId": {
-          "type": "string",
-          "format": "uint64"
-        },
-        "usePreprocessingFromTrainDataset": {
-          "type": "boolean"
         }
       }
     },

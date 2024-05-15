@@ -91,7 +91,8 @@ func (q *Queries) CreateLaunch(ctx context.Context, arg CreateLaunchParams) (int
 
 const createTrainedModel = `-- name: CreateTrainedModel :one
 insert into trained_models (name, description, base_model_id, train_dataset_id, launch_id, target_column)
-values ($1, $2, $3, $4, $5, $6)
+values ($1, $2, $3, $4, $5,
+        $6)
 returning id
 `
 
@@ -369,6 +370,20 @@ func (q *Queries) GetTrainedModelIDByLaunchID(ctx context.Context, launchID pgty
 	var id int64
 	err := row.Scan(&id)
 	return id, err
+}
+
+const getTrainedModelRunID = `-- name: GetTrainedModelRunID :one
+select l.output
+from trained_models tm
+         join launches l on tm.launch_id = l.id
+where tm.id = $1
+`
+
+func (q *Queries) GetTrainedModelRunID(ctx context.Context, id int64) ([]byte, error) {
+	row := q.db.QueryRow(ctx, getTrainedModelRunID, id)
+	var output []byte
+	err := row.Scan(&output)
+	return output, err
 }
 
 const updateLaunchStatus = `-- name: UpdateLaunchStatus :exec

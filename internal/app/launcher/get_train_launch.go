@@ -49,7 +49,7 @@ func (s *launcherService) GetTrainLaunch(ctx context.Context, req *pb.GetTrainLa
 		},
 		Error:          launch.LaunchError.String,
 		DatasetID:      int64(input.GetDatasetSettings().GetDatasetID()),
-		MlflowRunId:    output,
+		MlflowRunID:    output,
 		TrainedModelID: modelID,
 	}, nil
 }

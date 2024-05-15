@@ -101,7 +101,7 @@ func (s *launcherService) trainLauncher(userID int64, req *pb.LaunchTrainRequest
 			}
 		}
 		if err != nil {
-			return bytes, fmt.Errorf("s.client.SendDatasetSetTypesTask: %w", err)
+			return bytes, fmt.Errorf("s.client.SendTrainTask: %w", err)
 		}
 
 		log.Debug().Str("resp", fmt.Sprint(resp)).Msg("response")
@@ -136,7 +136,7 @@ func makeTrainRequest(launchID, userID int64, req *pb.LaunchTrainRequest, name s
 	body.TrainModelName = name
 	body.Metrics = metrics
 	body.TrainParams = trainParams{
-		UseCV:               req.GetUseCv(),
+		UseCV:               req.GetUseCV(),
 		CVChunks:            int(req.GetCvChunks()),
 		TrainTestSplitRatio: req.GetDatasetSettings().GetTrainTestSplit(),
 		Seed:                int(req.GetRandomSeed()),

@@ -138,6 +138,15 @@ service LauncherService {
     };
   }
 
+  rpc GetPredictionResultDownloadLink(GetPredictionResultDownloadLinkRequest) returns (GetPredictionResultDownloadLinkResponse) {
+    option (google.api.http) = {
+      get: "/api/v1/launches/predict/{launchID}/download"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
   rpc LaunchGenericConvert(LaunchGenericConvertRequest) returns (LaunchGenericConvertResponse) {
     option (google.api.http) = {
       post: "/api/v1/launches/generic_convert"
@@ -332,9 +341,9 @@ message LaunchTrainRequest {
   CommonLaunchInfo launchInfo = 1;
   TrainingModelSettings modelSettings = 2;
   TrainingDatasetSettings datasetSettings = 3;
-  bool use_cv = 4;
+  bool useCV = 4;
   int64 cvChunks = 5;
-  int64 random_seed = 6;
+  int64 randomSeed = 6;
 }
 
 message LaunchTrainResponse {
@@ -350,7 +359,7 @@ message GetTrainLaunchResponse {
   string error = 2;
   int64 datasetID = 3;
   int64 trainedModelID = 4;
-  string mlflow_run_id = 5;
+  string mlflowRunID = 5;
 }
 
 message PredictionModelSettings {
@@ -364,8 +373,8 @@ message PredictionDatasetSettings {
 
 message LaunchPredictRequest {
   CommonLaunchInfo launchInfo = 1;
-  TrainingModelSettings modelSettings = 2;
-  PredictionDatasetSettings datasetSettings = 3;
+  int64 trainedModelID = 2;
+  int64 datasetID = 3;
 }
 
 message LaunchPredictResponse {
@@ -381,7 +390,6 @@ message GetPredictLaunchResponse {
   string error = 2;
   int64 datasetID = 3;
   int64 trainedModelID = 4;
-  int64 resultDatasetID = 5;
 }
 
 message LaunchGenericConvertRequest {
@@ -413,8 +421,13 @@ message WaitForLaunchFinishRequest {
 message WaitForLaunchFinishResponse {
 }
 
+message GetPredictionResultDownloadLinkRequest {
+  int64 launchID = 1;
+}
 
-
+message GetPredictionResultDownloadLinkResponse {
+  string downloadLink = 1;
+}
 
 
 

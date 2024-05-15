@@ -14,12 +14,14 @@ const (
 	datasetSetTypesPath = "/set_column_types"
 	datasetUploadPath   = "/upload"
 	trainPath           = "/train"
+	predictPath         = "/predict"
 )
 
 type WorkersClient interface {
 	SendDatasetSetTypesTask(ctx context.Context, body io.Reader) error
 	SendDatasetUploadTask(ctx context.Context, body io.Reader) ([]string, error)
 	SendTrainTask(ctx context.Context, body io.Reader) (string, error)
+	SendPredictTask(ctx context.Context, body io.Reader) (map[string]any, error)
 }
 
 type workersClient struct {
@@ -123,6 +125,35 @@ func (w *workersClient) SendTrainTask(ctx context.Context, body io.Reader) (stri
 	err = json.Unmarshal(bytes, &output)
 	if err != nil {
 		return "", fmt.Errorf("json.Unmarshal: %w", err)
+	}
+
+	return output, nil
+}
+
+func (w *workersClient) SendPredictTask(ctx context.Context, body io.Reader) (map[string]any, error) {
+	resp, err := w.do(ctx, body, predictPath)
+	if err != nil {
+		if resp != nil {
+			if bytes, err2 := io.ReadAll(resp); err2 != nil {
+				log.Error().Err(err2).Msg("cannot read response body")
+			} else {
+				log.Error().Err(err).Str("resp", string(bytes)).Msg("error response body")
+			}
+		}
+
+		return nil, fmt.Errorf("w.do: %w", err)
+	}
+	defer func() { _ = resp.Close() }()
+
+	bytes, err := io.ReadAll(resp)
+	if err != nil {
+		return nil, fmt.Errorf("io.ReadAll: %w", err)
+	}
+
+	var output map[string]any
+	err = json.Unmarshal(bytes, &output)
+	if err != nil {
+		return nil, fmt.Errorf("json.Unmarshal: %w", err)
 	}
 
 	return output, nil

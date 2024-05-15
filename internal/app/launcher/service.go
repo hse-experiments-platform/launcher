@@ -9,6 +9,7 @@ import (
 	"github.com/hse-experiments-platform/launcher/internal/pkg/core/launch"
 	"github.com/hse-experiments-platform/launcher/internal/pkg/interactions/workers"
 	"github.com/hse-experiments-platform/launcher/internal/pkg/storage/db"
+	"github.com/hse-experiments-platform/launcher/internal/pkg/storage/s3"
 	pb "github.com/hse-experiments-platform/launcher/pkg/launcher"
 	"github.com/hse-experiments-platform/library/pkg/utils/token"
 	"github.com/jackc/pgx/v5"
@@ -26,18 +27,20 @@ type launcherService struct {
 	maker        token.Maker
 	client       workers.WorkersClient
 
-	commonDB *db.Queries
-	launcher launch.Launcher
+	commonDB  *db.Queries
+	launcher  launch.Launcher
+	s3Storage *s3.MinioStorage
 }
 
-func NewService(commonDBConn *pgxpool.Pool, maker token.Maker, client workers.WorkersClient) *launcherService {
+func NewService(commonDBConn *pgxpool.Pool, maker token.Maker, client workers.WorkersClient, s3Storage *s3.MinioStorage) *launcherService {
 	return &launcherService{
 		commonDBConn: commonDBConn,
 		maker:        maker,
 		client:       client,
 
-		commonDB: db.New(commonDBConn),
-		launcher: launch.NewLauncher(commonDBConn),
+		commonDB:  db.New(commonDBConn),
+		launcher:  launch.NewLauncher(commonDBConn),
+		s3Storage: s3Storage,
 	}
 }
 

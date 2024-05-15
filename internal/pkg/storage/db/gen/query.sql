@@ -83,10 +83,17 @@ where launch_id = $1;
 
 -- name: CreateTrainedModel :one
 insert into trained_models (name, description, base_model_id, train_dataset_id, launch_id, target_column)
-values (sqlc.arg(name), sqlc.arg(description), sqlc.arg(base_model_id), sqlc.arg(train_dataset_id), sqlc.arg(launch_id), sqlc.arg(target_column))
+values (sqlc.arg(name), sqlc.arg(description), sqlc.arg(base_model_id), sqlc.arg(train_dataset_id), sqlc.arg(launch_id),
+        sqlc.arg(target_column))
 returning id;
 
 -- name: CheckDatasetStatus :one
 select status::text = any (sqlc.arg(statuses)::text[])
 from datasets
 where id = $1;
+
+-- name: GetTrainedModelRunID :one
+select l.output
+from trained_models tm
+         join launches l on tm.launch_id = l.id
+where tm.id = $1;
