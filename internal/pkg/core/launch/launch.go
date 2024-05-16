@@ -64,6 +64,14 @@ func (l *launcher) launch(ctx context.Context, launchID int64, launchFunc func(c
 		}
 	}()
 
+	if err = l.commonDB.UpdateLaunchStatus(ctx, db.UpdateLaunchStatusParams{
+		ID:           launchID,
+		LaunchStatus: pb.LaunchStatus_LaunchStatusInProgress.String(),
+	}); err != nil {
+		err = revertable.NewRevertable(err, "cannot set launch status in progress")
+		return
+	}
+
 	bytes, err = launchFunc(ctx, launchID)
 }
 
