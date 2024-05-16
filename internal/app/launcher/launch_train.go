@@ -63,12 +63,12 @@ func (s *launcherService) LaunchTrain(ctx context.Context, req *pb.LaunchTrainRe
 	}
 
 	modelID, err := s.commonDB.CreateTrainedModel(ctx, db.CreateTrainedModelParams{
-		Name:           pgtype.Text{String: req.GetLaunchInfo().GetName(), Valid: true},
-		Description:    pgtype.Text{String: req.GetLaunchInfo().GetDescription(), Valid: true},
-		BaseModelID:    pgtype.Int8{Int64: int64(req.GetModelSettings().GetModelID()), Valid: true},
-		TrainDatasetID: pgtype.Int8{Int64: int64(req.GetDatasetSettings().GetDatasetID()), Valid: true},
+		Name:           req.GetLaunchInfo().GetName(),
+		Description:    req.GetLaunchInfo().GetDescription(),
+		BaseModelID:    int64(req.GetModelSettings().GetModelID()),
+		TrainDatasetID: int64(req.GetDatasetSettings().GetDatasetID()),
 		LaunchID:       pgtype.Int8{Int64: launchID, Valid: true},
-		TargetColumn:   pgtype.Text{String: req.GetDatasetSettings().GetTargetColumn(), Valid: true},
+		TargetColumn:   req.GetDatasetSettings().GetTargetColumn(),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("s.commonDB.CreateTrainedModel: %w", err)

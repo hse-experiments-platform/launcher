@@ -82,7 +82,7 @@ from trained_models
 where launch_id = $1;
 
 -- name: CreateTrainedModel :one
-insert into trained_models (name, description, base_model_id, train_dataset_id, launch_id, target_column)
+insert into trained_models (name, description, base_model_id, train_dataset_id, launch_id, target_col)
 values (sqlc.arg(name), sqlc.arg(description), sqlc.arg(base_model_id), sqlc.arg(train_dataset_id), sqlc.arg(launch_id),
         sqlc.arg(target_column))
 returning id;

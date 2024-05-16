@@ -90,19 +90,19 @@ func (q *Queries) CreateLaunch(ctx context.Context, arg CreateLaunchParams) (int
 }
 
 const createTrainedModel = `-- name: CreateTrainedModel :one
-insert into trained_models (name, description, base_model_id, train_dataset_id, launch_id, target_column)
+insert into trained_models (name, description, base_model_id, train_dataset_id, launch_id, target_col)
 values ($1, $2, $3, $4, $5,
         $6)
 returning id
 `
 
 type CreateTrainedModelParams struct {
-	Name           pgtype.Text
-	Description    pgtype.Text
-	BaseModelID    pgtype.Int8
-	TrainDatasetID pgtype.Int8
+	Name           string
+	Description    string
+	BaseModelID    int64
+	TrainDatasetID int64
 	LaunchID       pgtype.Int8
-	TargetColumn   pgtype.Text
+	TargetColumn   string
 }
 
 func (q *Queries) CreateTrainedModel(ctx context.Context, arg CreateTrainedModelParams) (int64, error) {
