@@ -17,11 +17,6 @@ func (s *launcherService) GetDatasetUploadLaunch(ctx context.Context, req *pb.Ge
 		return nil, fmt.Errorf("parseLaunchInputOutput: %w", err)
 	}
 
-	cols := make(map[string]pb.ColumnType, len(output))
-	for _, v := range output {
-		cols[v] = pb.ColumnType_ColumnTypeUndefined
-	}
-
 	return &pb.GetDatasetUploadLaunchResponse{
 		LaunchInfo: &pb.LaunchInfo{
 			LaunchID:    uint64(launch.ID),
@@ -32,6 +27,6 @@ func (s *launcherService) GetDatasetUploadLaunch(ctx context.Context, req *pb.Ge
 		},
 		Error:       launch.LaunchError.String,
 		DatasetID:   input.DatasetID,
-		ColumnTypes: cols,
+		ColumnNames: output,
 	}, nil
 }

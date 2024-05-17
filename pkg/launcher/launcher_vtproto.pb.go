@@ -448,19 +448,11 @@ func (m *GetDatasetUploadLaunchResponse) MarshalToSizedBufferVT(dAtA []byte) (in
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
-	if len(m.ColumnTypes) > 0 {
-		for k := range m.ColumnTypes {
-			v := m.ColumnTypes[k]
-			baseI := i
-			i = protohelpers.EncodeVarint(dAtA, i, uint64(v))
-			i--
-			dAtA[i] = 0x10
-			i -= len(k)
-			copy(dAtA[i:], k)
-			i = protohelpers.EncodeVarint(dAtA, i, uint64(len(k)))
-			i--
-			dAtA[i] = 0xa
-			i = protohelpers.EncodeVarint(dAtA, i, uint64(baseI-i))
+	if len(m.ColumnNames) > 0 {
+		for iNdEx := len(m.ColumnNames) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.ColumnNames[iNdEx])
+			copy(dAtA[i:], m.ColumnNames[iNdEx])
+			i = protohelpers.EncodeVarint(dAtA, i, uint64(len(m.ColumnNames[iNdEx])))
 			i--
 			dAtA[i] = 0x22
 		}
@@ -2433,12 +2425,10 @@ func (m *GetDatasetUploadLaunchResponse) SizeVT() (n int) {
 	if m.DatasetID != 0 {
 		n += 1 + protohelpers.SizeOfVarint(uint64(m.DatasetID))
 	}
-	if len(m.ColumnTypes) > 0 {
-		for k, v := range m.ColumnTypes {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + protohelpers.SizeOfVarint(uint64(len(k))) + 1 + protohelpers.SizeOfVarint(uint64(v))
-			n += mapEntrySize + 1 + protohelpers.SizeOfVarint(uint64(mapEntrySize))
+	if len(m.ColumnNames) > 0 {
+		for _, s := range m.ColumnNames {
+			l = len(s)
+			n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
 		}
 	}
 	n += len(m.unknownFields)
@@ -4169,9 +4159,9 @@ func (m *GetDatasetUploadLaunchResponse) UnmarshalVT(dAtA []byte) error {
 			}
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ColumnTypes", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ColumnNames", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return protohelpers.ErrIntOverflow
@@ -4181,104 +4171,23 @@ func (m *GetDatasetUploadLaunchResponse) UnmarshalVT(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return protohelpers.ErrInvalidLength
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return protohelpers.ErrInvalidLength
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.ColumnTypes == nil {
-				m.ColumnTypes = make(map[string]ColumnType)
-			}
-			var mapkey string
-			var mapvalue ColumnType
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protohelpers.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return protohelpers.ErrIntOverflow
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return protohelpers.ErrInvalidLength
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey < 0 {
-						return protohelpers.ErrInvalidLength
-					}
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return protohelpers.ErrIntOverflow
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						mapvalue |= ColumnType(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := protohelpers.Skip(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if (skippy < 0) || (iNdEx+skippy) < 0 {
-						return protohelpers.ErrInvalidLength
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.ColumnTypes[mapkey] = mapvalue
+			m.ColumnNames = append(m.ColumnNames, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

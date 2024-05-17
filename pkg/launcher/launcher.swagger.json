@@ -766,12 +766,11 @@
           "type": "string",
           "format": "int64"
         },
-        "columnTypes": {
-          "type": "object",
-          "additionalProperties": {
-            "$ref": "#/definitions/launcherColumnType"
-          },
-          "title": "автоопределенные типы колонок"
+        "columnNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },

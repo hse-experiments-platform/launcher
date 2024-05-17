@@ -253,7 +253,7 @@ message GetDatasetUploadLaunchResponse {
   LaunchInfo launchInfo = 1;
   string error = 2;
   int64 datasetID = 3;
-  map<string, ColumnType> columnTypes = 4; // автоопределенные типы колонок
+  repeated string columnNames = 4;
 }
 
 enum ColumnType {
