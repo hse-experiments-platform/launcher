@@ -11,7 +11,7 @@ import (
 )
 
 func (s *launcherService) GetPredictionResultDownloadLink(ctx context.Context, req *pb.GetPredictionResultDownloadLinkRequest) (*pb.GetPredictionResultDownloadLinkResponse, error) {
-	userID, err := getUserID(ctx)
+	_, err := getUserID(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -20,7 +20,7 @@ func (s *launcherService) GetPredictionResultDownloadLink(ctx context.Context, r
 		return nil, err
 	}
 
-	_, _, output, err := parseLaunchInputOutput[pb.LaunchPredictRequest, map[string]any](ctx, s, req.GetLaunchID())
+	l, _, output, err := parseLaunchInputOutput[pb.LaunchPredictRequest, map[string]any](ctx, s, req.GetLaunchID())
 	if err != nil {
 		return nil, fmt.Errorf("parseLaunchInputOutput: %w", err)
 	}
@@ -33,7 +33,7 @@ func (s *launcherService) GetPredictionResultDownloadLink(ctx context.Context, r
 		return nil, status.Error(codes.NotFound, "prediction result not found")
 	}
 
-	url, err := s.s3Storage.GetObjectDownloadLink(ctx, domain.GetBucketName(userID), objectName)
+	url, err := s.s3Storage.GetObjectDownloadLink(ctx, domain.GetBucketName(l.UserID), objectName)
 	if err != nil {
 		return nil, fmt.Errorf("s.s3Storage.GetObjectDownloadLink: %w", err)
 	}

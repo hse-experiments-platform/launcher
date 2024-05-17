@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/hse-experiments-platform/launcher/internal/pkg/storage/db"
@@ -78,7 +79,12 @@ func (l *launcher) launch(ctx context.Context, launchID int64, launchFunc func(c
 func (l *launcher) onLaunchFailed(ctx context.Context, launchID int64, err error, bytes []byte) {
 	var revErr *revertable.RevertableError
 	if !errors.As(err, &revErr) {
-		revErr = revertable.NewRevertable(err, "internal error")
+		s := strings.SplitAfter(string(bytes), "\n")
+		if s[len(s)-1] != "" {
+			revErr = revertable.NewRevertable(err, s[len(s)-1])
+		} else {
+			revErr = revertable.NewRevertable(err, "internal error")
+		}
 	}
 
 	log.Error().Err(err).Msg("launch failed")

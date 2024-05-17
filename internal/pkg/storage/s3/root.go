@@ -36,3 +36,7 @@ func (s *MinioStorage) CheckOrCreateBucket(ctx context.Context, bucketName strin
 func (s *MinioStorage) GetObjectDownloadLink(ctx context.Context, bucketName, objectName string) (*url.URL, error) {
 	return s.client.PresignedGetObject(ctx, bucketName, objectName, time.Hour*24*7, nil)
 }
+
+func (s *MinioStorage) GetObjectUploadLink(ctx context.Context, bucketName, objectName string) (*url.URL, error) {
+	return s.client.PresignedPutObject(ctx, bucketName, objectName, time.Hour)
+}

@@ -162,6 +162,7 @@ func (q *Queries) GetDatasetCreator(ctx context.Context, id int64) (int64, error
 const getLaunch = `-- name: GetLaunch :one
 select id,
        name,
+       user_id,
        description,
        launch_status,
        launch_error,
@@ -175,6 +176,7 @@ where id = $1
 type GetLaunchRow struct {
 	ID           int64
 	Name         string
+	UserID       int64
 	Description  string
 	LaunchStatus string
 	LaunchError  pgtype.Text
@@ -189,6 +191,7 @@ func (q *Queries) GetLaunch(ctx context.Context, id int64) (GetLaunchRow, error)
 	err := row.Scan(
 		&i.ID,
 		&i.Name,
+		&i.UserID,
 		&i.Description,
 		&i.LaunchStatus,
 		&i.LaunchError,

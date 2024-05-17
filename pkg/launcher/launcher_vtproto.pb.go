@@ -773,7 +773,7 @@ func (m *GetDatasetSetTypesLaunchResponse) MarshalToSizedBufferVT(dAtA []byte) (
 	return len(dAtA) - i, nil
 }
 
-func (m *PreprocessSettings) MarshalVT() (dAtA []byte, err error) {
+func (m *EmptiesStrategy) MarshalVT() (dAtA []byte, err error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -786,12 +786,12 @@ func (m *PreprocessSettings) MarshalVT() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *PreprocessSettings) MarshalToVT(dAtA []byte) (int, error) {
+func (m *EmptiesStrategy) MarshalToVT(dAtA []byte) (int, error) {
 	size := m.SizeVT()
 	return m.MarshalToSizedBufferVT(dAtA[:size])
 }
 
-func (m *PreprocessSettings) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+func (m *EmptiesStrategy) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	if m == nil {
 		return 0, nil
 	}
@@ -802,11 +802,28 @@ func (m *PreprocessSettings) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	if m.unknownFields != nil {
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
+	}
+	if len(m.FillingValue) > 0 {
+		i -= len(m.FillingValue)
+		copy(dAtA[i:], m.FillingValue)
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(len(m.FillingValue)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.AggregateFunction != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.AggregateFunction))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.FillingTechnique != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.FillingTechnique))
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *LaunchDatasetPreprocessRequest) MarshalVT() (dAtA []byte, err error) {
+func (m *OutlinersDetectingStrategy) MarshalVT() (dAtA []byte, err error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -819,12 +836,12 @@ func (m *LaunchDatasetPreprocessRequest) MarshalVT() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *LaunchDatasetPreprocessRequest) MarshalToVT(dAtA []byte) (int, error) {
+func (m *OutlinersDetectingStrategy) MarshalToVT(dAtA []byte) (int, error) {
 	size := m.SizeVT()
 	return m.MarshalToSizedBufferVT(dAtA[:size])
 }
 
-func (m *LaunchDatasetPreprocessRequest) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+func (m *OutlinersDetectingStrategy) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	if m == nil {
 		return 0, nil
 	}
@@ -836,8 +853,128 @@ func (m *LaunchDatasetPreprocessRequest) MarshalToSizedBufferVT(dAtA []byte) (in
 		i -= len(m.unknownFields)
 		copy(dAtA[i:], m.unknownFields)
 	}
-	if m.PreprocessSettings != nil {
-		size, err := m.PreprocessSettings.MarshalToSizedBufferVT(dAtA[:i])
+	if m.Max != 0 {
+		i -= 8
+		binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Max))))
+		i--
+		dAtA[i] = 0x19
+	}
+	if m.Min != 0 {
+		i -= 8
+		binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.Min))))
+		i--
+		dAtA[i] = 0x11
+	}
+	if m.Mode != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.Mode))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *OutlinersReplacementStrategy) MarshalVT() (dAtA []byte, err error) {
+	if m == nil {
+		return nil, nil
+	}
+	size := m.SizeVT()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBufferVT(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *OutlinersReplacementStrategy) MarshalToVT(dAtA []byte) (int, error) {
+	size := m.SizeVT()
+	return m.MarshalToSizedBufferVT(dAtA[:size])
+}
+
+func (m *OutlinersReplacementStrategy) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+	if m == nil {
+		return 0, nil
+	}
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.unknownFields != nil {
+		i -= len(m.unknownFields)
+		copy(dAtA[i:], m.unknownFields)
+	}
+	if len(m.ConstantValue) > 0 {
+		i -= len(m.ConstantValue)
+		copy(dAtA[i:], m.ConstantValue)
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(len(m.ConstantValue)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.AggregateValue != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.AggregateValue))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.ReplacementMode != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.ReplacementMode))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *TransformSettings) MarshalVT() (dAtA []byte, err error) {
+	if m == nil {
+		return nil, nil
+	}
+	size := m.SizeVT()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBufferVT(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *TransformSettings) MarshalToVT(dAtA []byte) (int, error) {
+	size := m.SizeVT()
+	return m.MarshalToSizedBufferVT(dAtA[:size])
+}
+
+func (m *TransformSettings) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+	if m == nil {
+		return 0, nil
+	}
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.unknownFields != nil {
+		i -= len(m.unknownFields)
+		copy(dAtA[i:], m.unknownFields)
+	}
+	if m.OutlinersReplacementStrategy != nil {
+		size, err := m.OutlinersReplacementStrategy.MarshalToSizedBufferVT(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(size))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.OutlinersDetectingStrategy != nil {
+		size, err := m.OutlinersDetectingStrategy.MarshalToSizedBufferVT(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(size))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.EmptiesStrategy != nil {
+		size, err := m.EmptiesStrategy.MarshalToSizedBufferVT(dAtA[:i])
 		if err != nil {
 			return 0, err
 		}
@@ -845,6 +982,71 @@ func (m *LaunchDatasetPreprocessRequest) MarshalToSizedBufferVT(dAtA []byte) (in
 		i = protohelpers.EncodeVarint(dAtA, i, uint64(size))
 		i--
 		dAtA[i] = 0x1a
+	}
+	if m.EncodingTechnique != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.EncodingTechnique))
+		i--
+		dAtA[i] = 0x10
+	}
+	if m.ScalingTechnique != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.ScalingTechnique))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *LaunchDatasetTransformRequest) MarshalVT() (dAtA []byte, err error) {
+	if m == nil {
+		return nil, nil
+	}
+	size := m.SizeVT()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBufferVT(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LaunchDatasetTransformRequest) MarshalToVT(dAtA []byte) (int, error) {
+	size := m.SizeVT()
+	return m.MarshalToSizedBufferVT(dAtA[:size])
+}
+
+func (m *LaunchDatasetTransformRequest) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+	if m == nil {
+		return 0, nil
+	}
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.unknownFields != nil {
+		i -= len(m.unknownFields)
+		copy(dAtA[i:], m.unknownFields)
+	}
+	if len(m.ColumnPreprocessSettings) > 0 {
+		for k := range m.ColumnPreprocessSettings {
+			v := m.ColumnPreprocessSettings[k]
+			baseI := i
+			size, err := v.MarshalToSizedBufferVT(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = protohelpers.EncodeVarint(dAtA, i, uint64(size))
+			i--
+			dAtA[i] = 0x12
+			i -= len(k)
+			copy(dAtA[i:], k)
+			i = protohelpers.EncodeVarint(dAtA, i, uint64(len(k)))
+			i--
+			dAtA[i] = 0xa
+			i = protohelpers.EncodeVarint(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0x1a
+		}
 	}
 	if m.DatasetID != 0 {
 		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.DatasetID))
@@ -864,7 +1066,7 @@ func (m *LaunchDatasetPreprocessRequest) MarshalToSizedBufferVT(dAtA []byte) (in
 	return len(dAtA) - i, nil
 }
 
-func (m *LaunchDatasetPreprocessResponse) MarshalVT() (dAtA []byte, err error) {
+func (m *LaunchDatasetTransformResponse) MarshalVT() (dAtA []byte, err error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -877,12 +1079,12 @@ func (m *LaunchDatasetPreprocessResponse) MarshalVT() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *LaunchDatasetPreprocessResponse) MarshalToVT(dAtA []byte) (int, error) {
+func (m *LaunchDatasetTransformResponse) MarshalToVT(dAtA []byte) (int, error) {
 	size := m.SizeVT()
 	return m.MarshalToSizedBufferVT(dAtA[:size])
 }
 
-func (m *LaunchDatasetPreprocessResponse) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+func (m *LaunchDatasetTransformResponse) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	if m == nil {
 		return 0, nil
 	}
@@ -902,7 +1104,7 @@ func (m *LaunchDatasetPreprocessResponse) MarshalToSizedBufferVT(dAtA []byte) (i
 	return len(dAtA) - i, nil
 }
 
-func (m *GetDatasetPreprocessLaunchRequest) MarshalVT() (dAtA []byte, err error) {
+func (m *GetDatasetTransformLaunchRequest) MarshalVT() (dAtA []byte, err error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -915,12 +1117,12 @@ func (m *GetDatasetPreprocessLaunchRequest) MarshalVT() (dAtA []byte, err error)
 	return dAtA[:n], nil
 }
 
-func (m *GetDatasetPreprocessLaunchRequest) MarshalToVT(dAtA []byte) (int, error) {
+func (m *GetDatasetTransformLaunchRequest) MarshalToVT(dAtA []byte) (int, error) {
 	size := m.SizeVT()
 	return m.MarshalToSizedBufferVT(dAtA[:size])
 }
 
-func (m *GetDatasetPreprocessLaunchRequest) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+func (m *GetDatasetTransformLaunchRequest) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	if m == nil {
 		return 0, nil
 	}
@@ -940,7 +1142,7 @@ func (m *GetDatasetPreprocessLaunchRequest) MarshalToSizedBufferVT(dAtA []byte) 
 	return len(dAtA) - i, nil
 }
 
-func (m *GetDatasetPreprocessLaunchResponse) MarshalVT() (dAtA []byte, err error) {
+func (m *GetDatasetTransformLaunchResponse) MarshalVT() (dAtA []byte, err error) {
 	if m == nil {
 		return nil, nil
 	}
@@ -953,12 +1155,12 @@ func (m *GetDatasetPreprocessLaunchResponse) MarshalVT() (dAtA []byte, err error
 	return dAtA[:n], nil
 }
 
-func (m *GetDatasetPreprocessLaunchResponse) MarshalToVT(dAtA []byte) (int, error) {
+func (m *GetDatasetTransformLaunchResponse) MarshalToVT(dAtA []byte) (int, error) {
 	size := m.SizeVT()
 	return m.MarshalToSizedBufferVT(dAtA[:size])
 }
 
-func (m *GetDatasetPreprocessLaunchResponse) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+func (m *GetDatasetTransformLaunchResponse) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
 	if m == nil {
 		return 0, nil
 	}
@@ -1965,6 +2167,101 @@ func (m *GetPredictionResultDownloadLinkResponse) MarshalToSizedBufferVT(dAtA []
 	return len(dAtA) - i, nil
 }
 
+func (m *LaunchFilePresignedUploadRequest) MarshalVT() (dAtA []byte, err error) {
+	if m == nil {
+		return nil, nil
+	}
+	size := m.SizeVT()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBufferVT(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LaunchFilePresignedUploadRequest) MarshalToVT(dAtA []byte) (int, error) {
+	size := m.SizeVT()
+	return m.MarshalToSizedBufferVT(dAtA[:size])
+}
+
+func (m *LaunchFilePresignedUploadRequest) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+	if m == nil {
+		return 0, nil
+	}
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.unknownFields != nil {
+		i -= len(m.unknownFields)
+		copy(dAtA[i:], m.unknownFields)
+	}
+	if len(m.Filename) > 0 {
+		i -= len(m.Filename)
+		copy(dAtA[i:], m.Filename)
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(len(m.Filename)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.LaunchInfo != nil {
+		size, err := m.LaunchInfo.MarshalToSizedBufferVT(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(size))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *LaunchFilePresignedUploadResponse) MarshalVT() (dAtA []byte, err error) {
+	if m == nil {
+		return nil, nil
+	}
+	size := m.SizeVT()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBufferVT(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *LaunchFilePresignedUploadResponse) MarshalToVT(dAtA []byte) (int, error) {
+	size := m.SizeVT()
+	return m.MarshalToSizedBufferVT(dAtA[:size])
+}
+
+func (m *LaunchFilePresignedUploadResponse) MarshalToSizedBufferVT(dAtA []byte) (int, error) {
+	if m == nil {
+		return 0, nil
+	}
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.unknownFields != nil {
+		i -= len(m.unknownFields)
+		copy(dAtA[i:], m.unknownFields)
+	}
+	if len(m.UploadURL) > 0 {
+		i -= len(m.UploadURL)
+		copy(dAtA[i:], m.UploadURL)
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(len(m.UploadURL)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.LaunchID != 0 {
+		i = protohelpers.EncodeVarint(dAtA, i, uint64(m.LaunchID))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *PageInfo) SizeVT() (n int) {
 	if m == nil {
 		return 0
@@ -2264,17 +2561,94 @@ func (m *GetDatasetSetTypesLaunchResponse) SizeVT() (n int) {
 	return n
 }
 
-func (m *PreprocessSettings) SizeVT() (n int) {
+func (m *EmptiesStrategy) SizeVT() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	if m.FillingTechnique != 0 {
+		n += 1 + protohelpers.SizeOfVarint(uint64(m.FillingTechnique))
+	}
+	if m.AggregateFunction != 0 {
+		n += 1 + protohelpers.SizeOfVarint(uint64(m.AggregateFunction))
+	}
+	l = len(m.FillingValue)
+	if l > 0 {
+		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
+	}
 	n += len(m.unknownFields)
 	return n
 }
 
-func (m *LaunchDatasetPreprocessRequest) SizeVT() (n int) {
+func (m *OutlinersDetectingStrategy) SizeVT() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Mode != 0 {
+		n += 1 + protohelpers.SizeOfVarint(uint64(m.Mode))
+	}
+	if m.Min != 0 {
+		n += 9
+	}
+	if m.Max != 0 {
+		n += 9
+	}
+	n += len(m.unknownFields)
+	return n
+}
+
+func (m *OutlinersReplacementStrategy) SizeVT() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ReplacementMode != 0 {
+		n += 1 + protohelpers.SizeOfVarint(uint64(m.ReplacementMode))
+	}
+	if m.AggregateValue != 0 {
+		n += 1 + protohelpers.SizeOfVarint(uint64(m.AggregateValue))
+	}
+	l = len(m.ConstantValue)
+	if l > 0 {
+		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
+	}
+	n += len(m.unknownFields)
+	return n
+}
+
+func (m *TransformSettings) SizeVT() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.ScalingTechnique != 0 {
+		n += 1 + protohelpers.SizeOfVarint(uint64(m.ScalingTechnique))
+	}
+	if m.EncodingTechnique != 0 {
+		n += 1 + protohelpers.SizeOfVarint(uint64(m.EncodingTechnique))
+	}
+	if m.EmptiesStrategy != nil {
+		l = m.EmptiesStrategy.SizeVT()
+		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
+	}
+	if m.OutlinersDetectingStrategy != nil {
+		l = m.OutlinersDetectingStrategy.SizeVT()
+		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
+	}
+	if m.OutlinersReplacementStrategy != nil {
+		l = m.OutlinersReplacementStrategy.SizeVT()
+		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
+	}
+	n += len(m.unknownFields)
+	return n
+}
+
+func (m *LaunchDatasetTransformRequest) SizeVT() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2287,15 +2661,24 @@ func (m *LaunchDatasetPreprocessRequest) SizeVT() (n int) {
 	if m.DatasetID != 0 {
 		n += 1 + protohelpers.SizeOfVarint(uint64(m.DatasetID))
 	}
-	if m.PreprocessSettings != nil {
-		l = m.PreprocessSettings.SizeVT()
-		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
+	if len(m.ColumnPreprocessSettings) > 0 {
+		for k, v := range m.ColumnPreprocessSettings {
+			_ = k
+			_ = v
+			l = 0
+			if v != nil {
+				l = v.SizeVT()
+			}
+			l += 1 + protohelpers.SizeOfVarint(uint64(l))
+			mapEntrySize := 1 + len(k) + protohelpers.SizeOfVarint(uint64(len(k))) + l
+			n += mapEntrySize + 1 + protohelpers.SizeOfVarint(uint64(mapEntrySize))
+		}
 	}
 	n += len(m.unknownFields)
 	return n
 }
 
-func (m *LaunchDatasetPreprocessResponse) SizeVT() (n int) {
+func (m *LaunchDatasetTransformResponse) SizeVT() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2308,7 +2691,7 @@ func (m *LaunchDatasetPreprocessResponse) SizeVT() (n int) {
 	return n
 }
 
-func (m *GetDatasetPreprocessLaunchRequest) SizeVT() (n int) {
+func (m *GetDatasetTransformLaunchRequest) SizeVT() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2321,7 +2704,7 @@ func (m *GetDatasetPreprocessLaunchRequest) SizeVT() (n int) {
 	return n
 }
 
-func (m *GetDatasetPreprocessLaunchResponse) SizeVT() (n int) {
+func (m *GetDatasetTransformLaunchResponse) SizeVT() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2692,6 +3075,41 @@ func (m *GetPredictionResultDownloadLinkResponse) SizeVT() (n int) {
 	var l int
 	_ = l
 	l = len(m.DownloadLink)
+	if l > 0 {
+		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
+	}
+	n += len(m.unknownFields)
+	return n
+}
+
+func (m *LaunchFilePresignedUploadRequest) SizeVT() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.LaunchInfo != nil {
+		l = m.LaunchInfo.SizeVT()
+		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
+	}
+	l = len(m.Filename)
+	if l > 0 {
+		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
+	}
+	n += len(m.unknownFields)
+	return n
+}
+
+func (m *LaunchFilePresignedUploadResponse) SizeVT() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.LaunchID != 0 {
+		n += 1 + protohelpers.SizeOfVarint(uint64(m.LaunchID))
+	}
+	l = len(m.UploadURL)
 	if l > 0 {
 		n += 1 + l + protohelpers.SizeOfVarint(uint64(l))
 	}
@@ -4685,7 +5103,7 @@ func (m *GetDatasetSetTypesLaunchResponse) UnmarshalVT(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *PreprocessSettings) UnmarshalVT(dAtA []byte) error {
+func (m *EmptiesStrategy) UnmarshalVT(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4708,12 +5126,82 @@ func (m *PreprocessSettings) UnmarshalVT(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: PreprocessSettings: wiretype end group for non-group")
+			return fmt.Errorf("proto: EmptiesStrategy: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: PreprocessSettings: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: EmptiesStrategy: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FillingTechnique", wireType)
+			}
+			m.FillingTechnique = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.FillingTechnique |= FillingTechnique(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AggregateFunction", wireType)
+			}
+			m.AggregateFunction = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.AggregateFunction |= AggregateFunction(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FillingValue", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FillingValue = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := protohelpers.Skip(dAtA[iNdEx:])
@@ -4736,7 +5224,7 @@ func (m *PreprocessSettings) UnmarshalVT(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *LaunchDatasetPreprocessRequest) UnmarshalVT(dAtA []byte) error {
+func (m *OutlinersDetectingStrategy) UnmarshalVT(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4759,10 +5247,420 @@ func (m *LaunchDatasetPreprocessRequest) UnmarshalVT(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: LaunchDatasetPreprocessRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: OutlinersDetectingStrategy: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: LaunchDatasetPreprocessRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: OutlinersDetectingStrategy: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Mode", wireType)
+			}
+			m.Mode = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Mode |= OutlinesDetectingMode(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Min", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.Min = float64(math.Float64frombits(v))
+		case 3:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Max", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.Max = float64(math.Float64frombits(v))
+		default:
+			iNdEx = preIndex
+			skippy, err := protohelpers.Skip(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.unknownFields = append(m.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *OutlinersReplacementStrategy) UnmarshalVT(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return protohelpers.ErrIntOverflow
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: OutlinersReplacementStrategy: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: OutlinersReplacementStrategy: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReplacementMode", wireType)
+			}
+			m.ReplacementMode = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ReplacementMode |= FillingTechnique(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AggregateValue", wireType)
+			}
+			m.AggregateValue = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.AggregateValue |= AggregateFunction(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ConstantValue", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ConstantValue = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := protohelpers.Skip(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.unknownFields = append(m.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *TransformSettings) UnmarshalVT(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return protohelpers.ErrIntOverflow
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: TransformSettings: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: TransformSettings: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ScalingTechnique", wireType)
+			}
+			m.ScalingTechnique = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ScalingTechnique |= ScalingTechnique(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EncodingTechnique", wireType)
+			}
+			m.EncodingTechnique = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.EncodingTechnique |= EncodingTechnique(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EmptiesStrategy", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.EmptiesStrategy == nil {
+				m.EmptiesStrategy = &EmptiesStrategy{}
+			}
+			if err := m.EmptiesStrategy.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OutlinersDetectingStrategy", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.OutlinersDetectingStrategy == nil {
+				m.OutlinersDetectingStrategy = &OutlinersDetectingStrategy{}
+			}
+			if err := m.OutlinersDetectingStrategy.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OutlinersReplacementStrategy", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.OutlinersReplacementStrategy == nil {
+				m.OutlinersReplacementStrategy = &OutlinersReplacementStrategy{}
+			}
+			if err := m.OutlinersReplacementStrategy.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := protohelpers.Skip(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.unknownFields = append(m.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *LaunchDatasetTransformRequest) UnmarshalVT(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return protohelpers.ErrIntOverflow
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LaunchDatasetTransformRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LaunchDatasetTransformRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -4822,7 +5720,7 @@ func (m *LaunchDatasetPreprocessRequest) UnmarshalVT(dAtA []byte) error {
 			}
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PreprocessSettings", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ColumnPreprocessSettings", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -4849,12 +5747,105 @@ func (m *LaunchDatasetPreprocessRequest) UnmarshalVT(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.PreprocessSettings == nil {
-				m.PreprocessSettings = &PreprocessSettings{}
+			if m.ColumnPreprocessSettings == nil {
+				m.ColumnPreprocessSettings = make(map[string]*TransformSettings)
 			}
-			if err := m.PreprocessSettings.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
-				return err
+			var mapkey string
+			var mapvalue *TransformSettings
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protohelpers.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protohelpers.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return protohelpers.ErrInvalidLength
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey < 0 {
+						return protohelpers.ErrInvalidLength
+					}
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var mapmsglen int
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protohelpers.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						mapmsglen |= int(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					if mapmsglen < 0 {
+						return protohelpers.ErrInvalidLength
+					}
+					postmsgIndex := iNdEx + mapmsglen
+					if postmsgIndex < 0 {
+						return protohelpers.ErrInvalidLength
+					}
+					if postmsgIndex > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = &TransformSettings{}
+					if err := mapvalue.UnmarshalVT(dAtA[iNdEx:postmsgIndex]); err != nil {
+						return err
+					}
+					iNdEx = postmsgIndex
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := protohelpers.Skip(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if (skippy < 0) || (iNdEx+skippy) < 0 {
+						return protohelpers.ErrInvalidLength
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
 			}
+			m.ColumnPreprocessSettings[mapkey] = mapvalue
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -4878,7 +5869,7 @@ func (m *LaunchDatasetPreprocessRequest) UnmarshalVT(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *LaunchDatasetPreprocessResponse) UnmarshalVT(dAtA []byte) error {
+func (m *LaunchDatasetTransformResponse) UnmarshalVT(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4901,10 +5892,10 @@ func (m *LaunchDatasetPreprocessResponse) UnmarshalVT(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: LaunchDatasetPreprocessResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: LaunchDatasetTransformResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: LaunchDatasetPreprocessResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: LaunchDatasetTransformResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -4948,7 +5939,7 @@ func (m *LaunchDatasetPreprocessResponse) UnmarshalVT(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GetDatasetPreprocessLaunchRequest) UnmarshalVT(dAtA []byte) error {
+func (m *GetDatasetTransformLaunchRequest) UnmarshalVT(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -4971,10 +5962,10 @@ func (m *GetDatasetPreprocessLaunchRequest) UnmarshalVT(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetDatasetPreprocessLaunchRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: GetDatasetTransformLaunchRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetDatasetPreprocessLaunchRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GetDatasetTransformLaunchRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -5018,7 +6009,7 @@ func (m *GetDatasetPreprocessLaunchRequest) UnmarshalVT(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GetDatasetPreprocessLaunchResponse) UnmarshalVT(dAtA []byte) error {
+func (m *GetDatasetTransformLaunchResponse) UnmarshalVT(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -5041,10 +6032,10 @@ func (m *GetDatasetPreprocessLaunchResponse) UnmarshalVT(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetDatasetPreprocessLaunchResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: GetDatasetTransformLaunchResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetDatasetPreprocessLaunchResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GetDatasetTransformLaunchResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -5164,7 +6155,7 @@ func (m *GetDatasetPreprocessLaunchResponse) UnmarshalVT(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.PreprocessSettings == nil {
-				m.PreprocessSettings = &PreprocessSettings{}
+				m.PreprocessSettings = &TransformSettings{}
 			}
 			if err := m.PreprocessSettings.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -7373,6 +8364,227 @@ func (m *GetPredictionResultDownloadLinkResponse) UnmarshalVT(dAtA []byte) error
 				return io.ErrUnexpectedEOF
 			}
 			m.DownloadLink = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := protohelpers.Skip(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.unknownFields = append(m.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *LaunchFilePresignedUploadRequest) UnmarshalVT(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return protohelpers.ErrIntOverflow
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LaunchFilePresignedUploadRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LaunchFilePresignedUploadRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LaunchInfo", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.LaunchInfo == nil {
+				m.LaunchInfo = &CommonLaunchInfo{}
+			}
+			if err := m.LaunchInfo.UnmarshalVT(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Filename", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Filename = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := protohelpers.Skip(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.unknownFields = append(m.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *LaunchFilePresignedUploadResponse) UnmarshalVT(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return protohelpers.ErrIntOverflow
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: LaunchFilePresignedUploadResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: LaunchFilePresignedUploadResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field LaunchID", wireType)
+			}
+			m.LaunchID = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.LaunchID |= int64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field UploadURL", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protohelpers.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return protohelpers.ErrInvalidLength
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.UploadURL = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

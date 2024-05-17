@@ -11,6 +11,7 @@ limit $1 offset $2;
 -- name: GetLaunch :one
 select id,
        name,
+       user_id,
        description,
        launch_status,
        launch_error,

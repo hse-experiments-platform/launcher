@@ -81,7 +81,7 @@ service LauncherService {
     };
   }
 
-  rpc LaunchDatasetPreprocess(LaunchDatasetPreprocessRequest) returns (LaunchDatasetPreprocessResponse) {
+  rpc LaunchDatasetTransform(LaunchDatasetTransformRequest) returns (LaunchDatasetTransformResponse) {
     option (google.api.http) = {
       post: "/api/v1/launches/dataset_preprocess"
       body: "*"
@@ -91,7 +91,7 @@ service LauncherService {
     };
   }
 
-  rpc GetDatasetPreprocessLaunch(GetDatasetPreprocessLaunchRequest) returns (GetDatasetPreprocessLaunchResponse) {
+  rpc GetDatasetTransformLaunch(GetDatasetTransformLaunchRequest) returns (GetDatasetTransformLaunchResponse) {
     option (google.api.http) = {
       get: "/api/v1/launches/dataset_preprocess/{launchID}"
     };
@@ -166,6 +166,15 @@ service LauncherService {
     };
   }
 
+  rpc LaunchFilePresignedUpload(LaunchFilePresignedUploadRequest) returns (LaunchFilePresignedUploadResponse){
+    option (google.api.http) = {
+      post: "/api/v1/launches/upload"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {security_requirement: {key: "AccessToken";value: {}}}
+    };
+  }
+
   rpc WaitForLaunchFinish(WaitForLaunchFinishRequest) returns (WaitForLaunchFinishResponse) {
     option (google.api.http) = {
       post: "/api/v1/launches/{launchID}/wait"
@@ -174,7 +183,6 @@ service LauncherService {
       security: {security_requirement: {key: "AccessToken";value: {}}}
     };
   }
-
 }
 
 message PageInfo {
@@ -195,10 +203,11 @@ enum LaunchType {
   LaunchTypeUnknown = 0;
   LaunchTypeDatasetUpload = 1;
   LaunchTypeDatasetSetTypes = 2;
-  LaunchTypeDatasetPreprocess = 3;
+  LaunchTypeDatasetTransform = 3;
   LaunchTypeTrain = 4;
   LaunchTypePredict = 5;
   LaunchTypeGenericConvert = 6;
+  LaunchTypeFileUpload = 7;
 }
 
 message LaunchInfo {
@@ -301,29 +310,71 @@ message GetDatasetSetTypesLaunchResponse {
   map<string, SetTypeSettings> columnTypes = 4; // установленные типы колонок
 }
 
-message PreprocessSettings {
-  // TODO: preprocess
+
+enum ScalingTechnique {
+  ScalingTechniqueUndefined = 0;
+  ScalingTechniqueNormalization = 1;
+  ScalingTechniqueStandardization = 2;
 }
 
-message LaunchDatasetPreprocessRequest {
+enum EncodingTechnique {
+  EncodingTechniqueUndefined = 0;
+  EncodingTechniqueOneHotEncoding = 1;
+  EncodingTechniqueLabelEncoding = 2;
+}
+
+message EmptiesStrategy {
+  FillingTechnique fillingTechnique = 1;
+  AggregateFunction aggregateFunction = 2;
+  string fillingValue = 3;
+}
+
+enum OutlinesDetectingMode {
+  OutlinesDetectingModeUnknown = 0;
+  OutlinesDetectingModeNone = 1;
+  OutlinesDetectingModeUnknownMinMaxThresholds = 2;
+  OutlinesDetectingModeUnknownIQRMethod = 3;
+}
+
+message OutlinersDetectingStrategy {
+    OutlinesDetectingMode mode = 1;
+    double min = 2;
+    double max = 3;
+}
+
+message OutlinersReplacementStrategy {
+  FillingTechnique replacementMode = 1;
+  AggregateFunction aggregateValue = 2;
+  string constantValue = 3;
+}
+
+message TransformSettings {
+  ScalingTechnique scalingTechnique = 1;
+  EncodingTechnique encodingTechnique = 2;
+  EmptiesStrategy emptiesStrategy = 3;
+  OutlinersDetectingStrategy outlinersDetectingStrategy = 4;
+  OutlinersReplacementStrategy outlinersReplacementStrategy = 5;
+}
+
+message LaunchDatasetTransformRequest {
   CommonLaunchInfo launchInfo = 1;
   int64 datasetID = 2;
-  PreprocessSettings preprocessSettings = 3;
+  map<string, TransformSettings> columnPreprocessSettings = 3;
 }
 
-message LaunchDatasetPreprocessResponse {
+message LaunchDatasetTransformResponse {
   int64 launchID = 1;
 }
 
-message GetDatasetPreprocessLaunchRequest {
+message GetDatasetTransformLaunchRequest {
   int64 launchID = 1;
 }
 
-message GetDatasetPreprocessLaunchResponse {
+message GetDatasetTransformLaunchResponse {
   LaunchInfo launchInfo = 1;
   string error = 2;
   int64 datasetID = 3;
-  PreprocessSettings preprocessSettings = 4;
+  TransformSettings preprocessSettings = 4;
 }
 
 message TrainingModelSettings {
@@ -427,6 +478,16 @@ message GetPredictionResultDownloadLinkRequest {
 
 message GetPredictionResultDownloadLinkResponse {
   string downloadLink = 1;
+}
+
+message LaunchFilePresignedUploadRequest {
+  CommonLaunchInfo launchInfo = 1;
+  string filename = 2;
+}
+
+message LaunchFilePresignedUploadResponse {
+  int64 launchID = 1;
+  string uploadURL = 2;
 }
 
 

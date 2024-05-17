@@ -67,10 +67,11 @@
               "LaunchTypeUnknown",
               "LaunchTypeDatasetUpload",
               "LaunchTypeDatasetSetTypes",
-              "LaunchTypeDatasetPreprocess",
+              "LaunchTypeDatasetTransform",
               "LaunchTypeTrain",
               "LaunchTypePredict",
-              "LaunchTypeGenericConvert"
+              "LaunchTypeGenericConvert",
+              "LaunchTypeFileUpload"
             ],
             "default": "LaunchTypeUnknown"
           }
@@ -87,12 +88,12 @@
     },
     "/api/v1/launches/dataset_preprocess": {
       "post": {
-        "operationId": "LauncherService_LaunchDatasetPreprocess",
+        "operationId": "LauncherService_LaunchDatasetTransform",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/launcherLaunchDatasetPreprocessResponse"
+              "$ref": "#/definitions/launcherLaunchDatasetTransformResponse"
             }
           },
           "default": {
@@ -108,7 +109,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/launcherLaunchDatasetPreprocessRequest"
+              "$ref": "#/definitions/launcherLaunchDatasetTransformRequest"
             }
           }
         ],
@@ -124,12 +125,12 @@
     },
     "/api/v1/launches/dataset_preprocess/{launchID}": {
       "get": {
-        "operationId": "LauncherService_GetDatasetPreprocessLaunch",
+        "operationId": "LauncherService_GetDatasetTransformLaunch",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/launcherGetDatasetPreprocessLaunchResponse"
+              "$ref": "#/definitions/launcherGetDatasetTransformLaunchResponse"
             }
           },
           "default": {
@@ -559,6 +560,53 @@
         ]
       }
     },
+    "/api/v1/launches/upload": {
+      "post": {
+        "operationId": "LauncherService_LaunchFilePresignedUpload",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/launcherLaunchFilePresignedUploadResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "launchInfo.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "launchInfo.description",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "filename",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "LauncherService"
+        ],
+        "security": [
+          {
+            "AccessToken": []
+          }
+        ]
+      }
+    },
     "/api/v1/launches/{launchID}/wait": {
       "post": {
         "operationId": "LauncherService_WaitForLaunchFinish",
@@ -631,6 +679,29 @@
         }
       }
     },
+    "launcherEmptiesStrategy": {
+      "type": "object",
+      "properties": {
+        "fillingTechnique": {
+          "$ref": "#/definitions/launcherFillingTechnique"
+        },
+        "aggregateFunction": {
+          "$ref": "#/definitions/launcherAggregateFunction"
+        },
+        "fillingValue": {
+          "type": "string"
+        }
+      }
+    },
+    "launcherEncodingTechnique": {
+      "type": "string",
+      "enum": [
+        "EncodingTechniqueUndefined",
+        "EncodingTechniqueOneHotEncoding",
+        "EncodingTechniqueLabelEncoding"
+      ],
+      "default": "EncodingTechniqueUndefined"
+    },
     "launcherFillingTechnique": {
       "type": "string",
       "enum": [
@@ -641,24 +712,6 @@
         "FillingTechniqueDeleteRow"
       ],
       "default": "FillingTechniqueUndefined"
-    },
-    "launcherGetDatasetPreprocessLaunchResponse": {
-      "type": "object",
-      "properties": {
-        "launchInfo": {
-          "$ref": "#/definitions/launcherLaunchInfo"
-        },
-        "error": {
-          "type": "string"
-        },
-        "datasetID": {
-          "type": "string",
-          "format": "int64"
-        },
-        "preprocessSettings": {
-          "$ref": "#/definitions/launcherPreprocessSettings"
-        }
-      }
     },
     "launcherGetDatasetSetTypesLaunchResponse": {
       "type": "object",
@@ -679,6 +732,24 @@
             "$ref": "#/definitions/launcherSetTypeSettings"
           },
           "title": "установленные типы колонок"
+        }
+      }
+    },
+    "launcherGetDatasetTransformLaunchResponse": {
+      "type": "object",
+      "properties": {
+        "launchInfo": {
+          "$ref": "#/definitions/launcherLaunchInfo"
+        },
+        "error": {
+          "type": "string"
+        },
+        "datasetID": {
+          "type": "string",
+          "format": "int64"
+        },
+        "preprocessSettings": {
+          "$ref": "#/definitions/launcherTransformSettings"
         }
       }
     },
@@ -788,30 +859,6 @@
         }
       }
     },
-    "launcherLaunchDatasetPreprocessRequest": {
-      "type": "object",
-      "properties": {
-        "launchInfo": {
-          "$ref": "#/definitions/launcherCommonLaunchInfo"
-        },
-        "datasetID": {
-          "type": "string",
-          "format": "int64"
-        },
-        "preprocessSettings": {
-          "$ref": "#/definitions/launcherPreprocessSettings"
-        }
-      }
-    },
-    "launcherLaunchDatasetPreprocessResponse": {
-      "type": "object",
-      "properties": {
-        "launchID": {
-          "type": "string",
-          "format": "int64"
-        }
-      }
-    },
     "launcherLaunchDatasetSetTypesRequest": {
       "type": "object",
       "properties": {
@@ -843,6 +890,33 @@
         }
       }
     },
+    "launcherLaunchDatasetTransformRequest": {
+      "type": "object",
+      "properties": {
+        "launchInfo": {
+          "$ref": "#/definitions/launcherCommonLaunchInfo"
+        },
+        "datasetID": {
+          "type": "string",
+          "format": "int64"
+        },
+        "columnPreprocessSettings": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/launcherTransformSettings"
+          }
+        }
+      }
+    },
+    "launcherLaunchDatasetTransformResponse": {
+      "type": "object",
+      "properties": {
+        "launchID": {
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
     "launcherLaunchDatasetUploadRequest": {
       "type": "object",
       "properties": {
@@ -864,6 +938,18 @@
         "launchID": {
           "type": "string",
           "format": "int64"
+        }
+      }
+    },
+    "launcherLaunchFilePresignedUploadResponse": {
+      "type": "object",
+      "properties": {
+        "launchID": {
+          "type": "string",
+          "format": "int64"
+        },
+        "uploadURL": {
+          "type": "string"
         }
       }
     },
@@ -987,12 +1073,53 @@
         "LaunchTypeUnknown",
         "LaunchTypeDatasetUpload",
         "LaunchTypeDatasetSetTypes",
-        "LaunchTypeDatasetPreprocess",
+        "LaunchTypeDatasetTransform",
         "LaunchTypeTrain",
         "LaunchTypePredict",
-        "LaunchTypeGenericConvert"
+        "LaunchTypeGenericConvert",
+        "LaunchTypeFileUpload"
       ],
       "default": "LaunchTypeUnknown"
+    },
+    "launcherOutlinersDetectingStrategy": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "$ref": "#/definitions/launcherOutlinesDetectingMode"
+        },
+        "min": {
+          "type": "number",
+          "format": "double"
+        },
+        "max": {
+          "type": "number",
+          "format": "double"
+        }
+      }
+    },
+    "launcherOutlinersReplacementStrategy": {
+      "type": "object",
+      "properties": {
+        "replacementMode": {
+          "$ref": "#/definitions/launcherFillingTechnique"
+        },
+        "aggregateValue": {
+          "$ref": "#/definitions/launcherAggregateFunction"
+        },
+        "constantValue": {
+          "type": "string"
+        }
+      }
+    },
+    "launcherOutlinesDetectingMode": {
+      "type": "string",
+      "enum": [
+        "OutlinesDetectingModeUnknown",
+        "OutlinesDetectingModeNone",
+        "OutlinesDetectingModeUnknownMinMaxThresholds",
+        "OutlinesDetectingModeUnknownIQRMethod"
+      ],
+      "default": "OutlinesDetectingModeUnknown"
     },
     "launcherPageInfo": {
       "type": "object",
@@ -1011,9 +1138,14 @@
         }
       }
     },
-    "launcherPreprocessSettings": {
-      "type": "object",
-      "title": "TODO: preprocess"
+    "launcherScalingTechnique": {
+      "type": "string",
+      "enum": [
+        "ScalingTechniqueUndefined",
+        "ScalingTechniqueNormalization",
+        "ScalingTechniqueStandardization"
+      ],
+      "default": "ScalingTechniqueUndefined"
     },
     "launcherSetTypeSettings": {
       "type": "object",
@@ -1060,6 +1192,26 @@
           "additionalProperties": {
             "type": "string"
           }
+        }
+      }
+    },
+    "launcherTransformSettings": {
+      "type": "object",
+      "properties": {
+        "scalingTechnique": {
+          "$ref": "#/definitions/launcherScalingTechnique"
+        },
+        "encodingTechnique": {
+          "$ref": "#/definitions/launcherEncodingTechnique"
+        },
+        "emptiesStrategy": {
+          "$ref": "#/definitions/launcherEmptiesStrategy"
+        },
+        "outlinersDetectingStrategy": {
+          "$ref": "#/definitions/launcherOutlinersDetectingStrategy"
+        },
+        "outlinersReplacementStrategy": {
+          "$ref": "#/definitions/launcherOutlinersReplacementStrategy"
         }
       }
     },
